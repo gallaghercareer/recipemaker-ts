@@ -9,11 +9,13 @@ import AddIcon from '@mui/icons-material/Add';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 
 const Home = () => {
-    // 2. Consume recipes and loading state from the context
+
+    //Context fetches recipe data
     const { recipes, fetchRecipes, loading } = useRecipes();
+
     const { accounts } = useMsal();
 
-    // 3. Trigger the fetch once when the user is logged in
+
     useEffect(() => {
         if (accounts.length > 0) {
             fetchRecipes();
@@ -65,6 +67,7 @@ const Home = () => {
                     </Typography>
                     <Divider sx={{ mb: 2 }} />
 
+                    {/* Load recipes */}
                     {loading ? (
                         // loading State
                         <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -76,7 +79,7 @@ const Home = () => {
                                 <Grid item xs={12} key={recipe.RowKey}>
                                     <Card variant="outlined">
                                         <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: '12px !important' }}>
-                                            {/* Note: PascalCase "Title" from C# Entity */}
+
                                             <Typography fontWeight="500">{recipe.Title || recipe.title}</Typography>
                                             <Typography variant="caption" color="text.secondary">
                                                 {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Just now"}
