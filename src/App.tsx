@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
 import './App.css'
-import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal, useIsAuthenticated } from '@azure/msal-react';
+import { AuthenticatedTemplate, UnauthenticatedTemplate } from '@azure/msal-react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from './components/NavigationBar';
 import Landing from './Pages/Landing'
@@ -9,7 +8,6 @@ import { RecipeProvider } from './Context/RecipeContext.tsx'
 
 function App() {
 
-  const { instance } = useMsal()
 
 
   return (
