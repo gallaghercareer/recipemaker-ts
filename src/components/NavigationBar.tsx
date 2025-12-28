@@ -1,7 +1,7 @@
-import { AppBar, Toolbar, Button, Stack, Box, ButtonGroup } from '@mui/material'
+import { AppBar, Toolbar, Button, Box, ButtonGroup } from '@mui/material'
 import { loginRequest } from '../Config/Auth';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
-
+import Drawer from './Drawer'
 
 function NavigationBar() {
 
@@ -28,26 +28,22 @@ function NavigationBar() {
     return (
         <AppBar position="sticky" >
             <Toolbar >
-                <Box width="100%" sx={{}}>
-                    <Stack gap={5} flexDirection="row" justifyContent="flex-end" >
-
-                        <ButtonGroup sx={{ display: 'flex', alignItems: "center" }}>
-
-
-                            <AuthenticatedTemplate>
-                                <Button onClick={handleLogoutRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign Out</Button>
-                            </AuthenticatedTemplate>
-                            <UnauthenticatedTemplate>
-                                <Button onClick={handleLoginRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign In</Button>
-                            </UnauthenticatedTemplate>
-
-
+                <Box width="100%" sx={{ display: 'flex', alignItems: 'center' }}>
+                    <Drawer />
+                    <AuthenticatedTemplate>
+                        <ButtonGroup sx={{ display: 'flex', alignItems: "center", marginLeft: 'auto' }}>
+                            <Button onClick={handleLogoutRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign Out</Button>
                         </ButtonGroup>
+                    </AuthenticatedTemplate>
 
-                    </Stack>
+                    <UnauthenticatedTemplate>
+                        <ButtonGroup sx={{ display: 'flex', alignItems: "center", marginLeft: 'auto' }}>
+                            <Button onClick={handleLoginRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign In</Button>
+                        </ButtonGroup>
+                    </UnauthenticatedTemplate>
                 </Box>
             </Toolbar>
-        </AppBar>
+        </AppBar >
     )
 }
 
