@@ -16,7 +16,7 @@ export const msalConfig: Configuration = {
     auth: {
         clientId: 'c78d2d88-6e00-4983-937d-cc7d7d51a073', // This is the ONLY mandatory field that you need to supply.
         authority: 'https://CiamDevJPG.ciamlogin.com', // Replace the placeholder with your tenant subdomain 
-        redirectUri: 'http://localhost:5173/Home', // Points to window.location.origin. You must register this URI on Microsoft Entra admin center/App Registration.
+        redirectUri: import.meta.env.VITE_REDIRECT_URI, // Points to window.location.origin. You must register this URI on Microsoft Entra admin center/App Registration.
         postLogoutRedirectUri: 'http://localhost:5173/', // Indicates the page to navigate after logout.
         navigateToLoginRequestUrl: false, // If "true", will navigate back to the original request location before processing the auth code response.
     },
