@@ -9,14 +9,20 @@ function NavigationBar() {
     const { instance } = useMsal();
 
     const handleLoginRedirect = async () => {
+        const customRequest = {
+            ...loginRequest,
+            // Vite will swap this value at build time
+            redirectUri: import.meta.env.VITE_REDIRECT_URI
+        };
 
-        instance.loginRedirect(loginRequest).catch((error) => console.log(error));
+        instance.loginRedirect(customRequest).catch((error) => console.log(error));
     };
 
     const handleLogoutRedirect = async () => {
-        instance.logoutRedirect().catch((error) => console.log(error));
+        instance.logoutRedirect({
+            postLogoutRedirectUri: import.meta.env.VITE_LOGOUT_REDIRECT_URI,
+        }).catch((error) => console.log(error));
     };
-
 
 
     return (
