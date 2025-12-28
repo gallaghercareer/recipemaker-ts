@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from './components/NavigationBar';
 import Landing from './Pages/Landing'
 import Home from './Pages/Home'
+import { RecipeProvider } from './Context/RecipeContext.tsx'
 
 function App() {
 
@@ -12,26 +13,30 @@ function App() {
 
 
   return (
-    <Router>
-      <NavigationBar />
+    <RecipeProvider>
 
-      {/*Landing page for all users before login*/}
-      <UnauthenticatedTemplate>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-        </Routes>
-      </UnauthenticatedTemplate>
+      <Router>
+        <NavigationBar />
 
-      {/*Homepage for authenticated users*/}
-      <AuthenticatedTemplate>
+        {/*Landing page for all users before login*/}
+        <UnauthenticatedTemplate>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+          </Routes>
+        </UnauthenticatedTemplate>
 
-        <Routes>
-          <Route path="/Home" element={<Home />} />
+        {/*Homepage for authenticated users*/}
+        <AuthenticatedTemplate>
 
-        </Routes>
-      </AuthenticatedTemplate>
+          <Routes>
+            <Route path="/Home" element={<Home />} />
 
-    </Router >
+          </Routes>
+        </AuthenticatedTemplate>
+
+      </Router >
+    </RecipeProvider>
+
   )
 }
 
