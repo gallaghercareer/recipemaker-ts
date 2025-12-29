@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavigationBar from './components/NavigationBar';
 import Landing from './Pages/Landing'
 import Home from './Pages/Home'
+import CreateRecipe from './Pages/CreateRecipe'
 import { RecipeProvider } from './Context/RecipeContext.tsx'
 import { useState, useMemo } from 'react';
-import { ThemeProvider, createTheme, CssBaseline, PaletteMode } from '@mui/material';
+import { ThemeProvider, createTheme, CssBaseline, type PaletteMode } from '@mui/material';
 import { ColorModeContext } from './Context/ColorModeContext';
 import { getDesignTokens } from './Styles/theme';
 
@@ -46,7 +47,7 @@ function App() {
 
               <Routes>
                 <Route path="/Home" element={<Home />} />
-
+                <Route path="/create-recipe" element={<CreateRecipe />} />
               </Routes>
             </AuthenticatedTemplate>
 

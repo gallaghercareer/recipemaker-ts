@@ -1,4 +1,4 @@
-import { PaletteMode } from '@mui/material';
+import { type PaletteMode } from '@mui/material';
 import { grey, blue } from '@mui/material/colors';
 
 export const getDesignTokens = (mode: PaletteMode) => ({
@@ -84,7 +84,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
                     primary: '#f5f5f5',
                     secondary: '#a0a0a0',
                 },
-                 info: {
+                info: {
                     main: '#ecf0f1', // Light Grey/White
                 }
             }),

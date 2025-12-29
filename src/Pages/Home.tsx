@@ -1,5 +1,6 @@
 import { useMsal } from "@azure/msal-react";
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useRecipes } from '../Context/RecipeContext'; // 1. Import your new hook
 import {
     Container, Typography, Grid, Card, CardContent,
@@ -18,6 +19,7 @@ const Home = () => {
     const { recipes, fetchRecipes, loading } = useRecipes();
 
     const { accounts } = useMsal();
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -87,6 +89,7 @@ const Home = () => {
                                 <ActionCard
                                     title="New Recipe"
                                     icon={<AddCircleOutlineIcon sx={{ fontSize: 40 }} />}
+                                    onClick={() => navigate('/create-recipe')}
                                 />
                             </Grid>
                             <Grid item xs={6}>
