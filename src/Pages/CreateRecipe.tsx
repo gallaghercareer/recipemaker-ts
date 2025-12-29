@@ -39,7 +39,7 @@ const CreateRecipe = () => {
 
     return (
         <Box sx={{ minHeight: 'calc(100vh - 64px)', py: 4, bgcolor: 'background.default', color: 'text.primary' }}>
-            <Container maxWidth="md">
+            <Container maxWidth="lg">
                 <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <RestaurantIcon color="secondary" fontSize="large" /> Create New Recipe
                 </Typography>
@@ -47,7 +47,7 @@ const CreateRecipe = () => {
 
                 <Grid container spacing={4}>
                     {/* Left Column: Form Inputs */}
-                    <Grid item xs={12} md={8}>
+                    <Grid item xs={12} md={7}>
                         <Paper variant="outlined" sx={{ p: 4, bgcolor: 'background.paper', borderRadius: 2 }}>
                             
                             {/* Recipe Name */}
@@ -137,7 +137,7 @@ const CreateRecipe = () => {
                     </Grid>
 
                     {/* Right Column: Preview/List */}
-                    <Grid item xs={12} md={4}>
+                    <Grid item xs={12} md={5}>
                          <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                             <Typography variant="h6" fontFamily="Playfair Display" gutterBottom>
                                 Ingredient List
@@ -152,8 +152,29 @@ const CreateRecipe = () => {
                                     {ingredients.map((ingredient, index) => (
                                         <ListItem 
                                             key={index}
-                                            secondaryAction={
-                                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            sx={{ 
+                                                bgcolor: 'background.default', 
+                                                mb: 1, 
+                                                borderRadius: 1,
+                                                border: '1px solid',
+                                                borderColor: 'divider',
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'flex-start', // Align to top for multiline text
+                                                pr: 1 // Add some padding
+                                            }}
+                                        >
+                                            <ListItemText 
+                                                primary={ingredient} 
+                                                primaryTypographyProps={{ 
+                                                    style: { 
+                                                        whiteSpace: 'normal', 
+                                                        wordBreak: 'break-word' 
+                                                    } 
+                                                }}
+                                                sx={{ mr: 2, my: 0.5 }} // Add margin right to separate from icons
+                                            />
+                                            <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, mt: 0.5 }}>
                                                     <IconButton 
                                                         aria-label="add to grocery" 
                                                         size="small" 
@@ -183,25 +204,7 @@ const CreateRecipe = () => {
                                                     >
                                                         <DeleteIcon fontSize="small" />
                                                     </IconButton>
-                                                </Box>
-                                            }
-                                            sx={{ 
-                                                bgcolor: 'background.default', 
-                                                mb: 1, 
-                                                borderRadius: 1,
-                                                border: '1px solid',
-                                                borderColor: 'divider'
-                                            }}
-                                        >
-                                            <ListItemText 
-                                                primary={ingredient} 
-                                                primaryTypographyProps={{ 
-                                                    style: { 
-                                                        whiteSpace: 'normal', 
-                                                        wordBreak: 'break-word' 
-                                                    } 
-                                                }}
-                                            />
+                                            </Box>
                                         </ListItem>
                                     ))}
                                 </List>
