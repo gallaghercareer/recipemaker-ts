@@ -22,7 +22,7 @@ export default function TemporaryDrawer() {
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
-                {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                {['My Recipes', 'Categories', 'Grocery List', 'Contact Creator'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
@@ -51,7 +51,7 @@ export default function TemporaryDrawer() {
 
     return (
         <React.Fragment>
-            <IconButton onClick={toggleDrawer(true)} sx={{ color: 'white' }}>
+            <IconButton onClick={toggleDrawer(true)} color="inherit">
                 <MenuIcon />
             </IconButton>
             <Drawer open={open} onClose={toggleDrawer(false)}>

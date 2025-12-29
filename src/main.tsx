@@ -5,8 +5,6 @@ import App from './App.tsx'
 import './index.css';
 import { PublicClientApplication, EventType, type AuthenticationResult } from '@azure/msal-browser';
 import { msalConfig } from './Config/Auth';
-import { ThemeProvider } from '@emotion/react';
-import { theme } from './Styles/theme'
 import { MsalProvider } from '@azure/msal-react';
 
 /**
@@ -34,9 +32,7 @@ msalInstance.addEventCallback((event) => {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MsalProvider instance={msalInstance}>
-        <ThemeProvider theme={theme}>
           <App />
-        </ThemeProvider>
     </MsalProvider>
   </StrictMode>,
 )

@@ -5,36 +5,55 @@ import NavigationBar from './components/NavigationBar';
 import Landing from './Pages/Landing'
 import Home from './Pages/Home'
 import { RecipeProvider } from './Context/RecipeContext.tsx'
+import { useState, useMemo } from 'react';
+import { ThemeProvider, createTheme, CssBaseline, PaletteMode } from '@mui/material';
+import { ColorModeContext } from './Context/ColorModeContext';
+import { getDesignTokens } from './Styles/theme';
 
 function App() {
+  const [mode, setMode] = useState<PaletteMode>('light');
 
+  const colorMode = useMemo(
+    () => ({
+      // The dark mode switch would invoke this method
+      toggleColorMode: () => {
+        setMode((prevMode: PaletteMode) => (prevMode === 'light' ? 'dark' : 'light'));
+      },
+    }),
+    [],
+  );
 
+  // Update the theme only if the mode changes
+  const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
 
   return (
-    <RecipeProvider>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <RecipeProvider>
+          <Router>
+            <NavigationBar />
 
-      <Router>
-        <NavigationBar />
+            {/*Landing page for all users before login*/}
+            <UnauthenticatedTemplate>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+              </Routes>
+            </UnauthenticatedTemplate>
 
-        {/*Landing page for all users before login*/}
-        <UnauthenticatedTemplate>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-          </Routes>
-        </UnauthenticatedTemplate>
+            {/*Homepage for authenticated users*/}
+            <AuthenticatedTemplate>
 
-        {/*Homepage for authenticated users*/}
-        <AuthenticatedTemplate>
+              <Routes>
+                <Route path="/Home" element={<Home />} />
 
-          <Routes>
-            <Route path="/Home" element={<Home />} />
+              </Routes>
+            </AuthenticatedTemplate>
 
-          </Routes>
-        </AuthenticatedTemplate>
-
-      </Router >
-    </RecipeProvider>
-
+          </Router >
+        </RecipeProvider>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   )
 }
 

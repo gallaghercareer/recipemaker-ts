@@ -1,12 +1,18 @@
-import { AppBar, Toolbar, Button, Box, ButtonGroup } from '@mui/material'
+import { AppBar, Toolbar, Button, Box, ButtonGroup, IconButton, useTheme } from '@mui/material'
 import { loginRequest } from '../Config/Auth';
 import { AuthenticatedTemplate, UnauthenticatedTemplate, useMsal } from '@azure/msal-react';
 import Drawer from './Drawer'
+import { useContext } from 'react';
+import { ColorModeContext } from '../Context/ColorModeContext';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 function NavigationBar() {
 
 
     const { instance } = useMsal();
+    const theme = useTheme();
+    const colorMode = useContext(ColorModeContext);
 
     const handleLoginRedirect = async () => {
         const customRequest = {
@@ -30,15 +36,18 @@ function NavigationBar() {
             <Toolbar >
                 <Box width="100%" sx={{ display: 'flex', alignItems: 'center' }}>
                     <Drawer />
+                    <IconButton sx={{ ml: 1 }} onClick={colorMode.toggleColorMode} color="inherit">
+                        {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                     <AuthenticatedTemplate>
                         <ButtonGroup sx={{ display: 'flex', alignItems: "center", marginLeft: 'auto' }}>
-                            <Button onClick={handleLogoutRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign Out</Button>
+                            <Button onClick={handleLogoutRedirect} color="inherit" sx={{ fontSize: 25 }}>Sign Out</Button>
                         </ButtonGroup>
                     </AuthenticatedTemplate>
 
                     <UnauthenticatedTemplate>
                         <ButtonGroup sx={{ display: 'flex', alignItems: "center", marginLeft: 'auto' }}>
-                            <Button onClick={handleLoginRedirect} sx={{ color: 'white', fontSize: 25 }}>Sign In</Button>
+                            <Button onClick={handleLoginRedirect} color="inherit" sx={{ fontSize: 25 }}>Sign In</Button>
                         </ButtonGroup>
                     </UnauthenticatedTemplate>
                 </Box>

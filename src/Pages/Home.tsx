@@ -3,10 +3,14 @@ import { useEffect } from 'react';
 import { useRecipes } from '../Context/RecipeContext'; // 1. Import your new hook
 import {
     Container, Typography, Grid, Card, CardContent,
-    CardActions, Button, Box, Avatar, Divider, CircularProgress
+    Button, Box, Avatar, Divider, CircularProgress, Paper
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CategoryIcon from '@mui/icons-material/Category';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import ShuffleIcon from '@mui/icons-material/Shuffle';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 const Home = () => {
 
@@ -24,78 +28,142 @@ const Home = () => {
 
     const userName = accounts[0]?.name || "Chef";
 
-    return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {/* Welcome Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 4, gap: 2 }}>
-                <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
-                    {userName.charAt(0)}
-                </Avatar>
-                <Box>
-                    <Typography variant="h4" fontWeight="700">
-                        Welcome back, {userName}!
-                    </Typography>
-                    <Typography variant="body1" color="text.secondary">
-                        What are we cooking today?
-                    </Typography>
-                </Box>
+    const ActionCard = ({ title, icon, onClick, color = "primary.main" }: { title: string, icon: React.ReactNode, onClick?: () => void, color?: string }) => (
+        <Card
+            variant="outlined"
+            sx={{
+                height: 180,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: 4,
+                    borderColor: 'secondary.main'
+                },
+                bgcolor: 'background.paper'
+            }}
+            onClick={onClick}
+        >
+            <Box sx={{ color: 'secondary.main', mb: 2 }}>
+                {icon}
             </Box>
+            <Typography variant="h6" fontFamily="Playfair Display" fontWeight="600">
+                {title}
+            </Typography>
+        </Card>
+    );
 
-            <Grid container spacing={3}>
-                {/* Stats Card */}
-                <Grid item xs={12} md={4}>
-                    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: 'primary.light', color: 'white' }}>
-                        <CardContent>
-                            <Typography variant="h6" gutterBottom>Your Kitchen</Typography>
-                            <Typography variant="h3" fontWeight="bold">
-                                {loading ? '...' : recipes.length}
-                            </Typography>
-                            <Typography variant="body2">Saved Recipes</Typography>
-                        </CardContent>
-                        <CardActions>
-                            <Button size="small" variant="contained" color="secondary" startIcon={<AddIcon />}>
-                                New Recipe
-                            </Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
+    return (
+        <Box sx={{ minHeight: 'calc(100vh - 64px)', py: 4, bgcolor: 'background.default', color: 'text.primary' }}>
+            <Container maxWidth="lg">
+                {/* Welcome Header */}
+                <Box sx={{ display: 'flex', alignItems: 'center', mb: 6, gap: 2 }}>
+                    <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56, color: 'primary.contrastText' }}>
+                        {userName.charAt(0)}
+                    </Avatar>
+                    <Box>
+                        <Typography variant="h4" fontWeight="700" fontFamily="Playfair Display">
+                            Welcome back, {userName}!
+                        </Typography>
+                        <Typography variant="body1" color="text.secondary">
+                            What are we cooking today?
+                        </Typography>
+                    </Box>
+                </Box>
 
-                {/* Recipe List */}
-                <Grid item xs={12} md={8}>
-                    <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <RestaurantIcon /> Recent Recipes
-                    </Typography>
-                    <Divider sx={{ mb: 2 }} />
-
-                    {/* Load recipes */}
-                    {loading ? (
-                        // loading State
-                        <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                            <CircularProgress />
-                        </Box>
-                    ) : (
-                        <Grid container spacing={2}>
-                            {recipes.length > 0 ? recipes.map((recipe: any) => (
-                                <Grid item xs={12} key={recipe.RowKey}>
-                                    <Card variant="outlined">
-                                        <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: '12px !important' }}>
-
-                                            <Typography fontWeight="500">{recipe.Title || recipe.title}</Typography>
-                                            <Typography variant="caption" color="text.secondary">
-                                                {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Just now"}
-                                            </Typography>
-                                            <Button size="small">View</Button>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            )) : (
-                                <Typography sx={{ p: 2, color: 'text.secondary' }}>No recipes found in your table storage.</Typography>
-                            )}
+                <Grid container spacing={6}>
+                    {/* Left Side - Quick Actions 2x2 Grid */}
+                    <Grid item xs={12} md={6}>
+                        <Typography variant="h5" gutterBottom fontFamily="Playfair Display" sx={{ mb: 3 }}>
+                            Quick Actions
+                        </Typography>
+                        <Grid container spacing={3}>
+                            <Grid item xs={6}>
+                                <ActionCard
+                                    title="New Recipe"
+                                    icon={<AddCircleOutlineIcon sx={{ fontSize: 40 }} />}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <ActionCard
+                                    title="Categories"
+                                    icon={<CategoryIcon sx={{ fontSize: 40 }} />}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <ActionCard
+                                    title="Groceries"
+                                    icon={<LocalGroceryStoreIcon sx={{ fontSize: 40 }} />}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <ActionCard
+                                    title="Randomize"
+                                    icon={<ShuffleIcon sx={{ fontSize: 40 }} />}
+                                />
+                            </Grid>
                         </Grid>
-                    )}
+                    </Grid>
+
+                    {/* Right Side - Recent Recipes List */}
+                    <Grid item xs={12} md={6}>
+                        <Paper
+                            elevation={0}
+                            sx={{
+                                p: 3,
+                                bgcolor: 'background.paper',
+                                border: '1px solid',
+                                borderColor: 'divider',
+                                borderRadius: 2,
+                                height: '100%',
+                                minHeight: 400
+                            }}
+                        >
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
+                                <Typography variant="h6" fontFamily="Playfair Display" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <RestaurantIcon color="secondary" /> Recent Recipes
+                                </Typography>
+                                <Button size="small" color="secondary">View All</Button>
+                            </Box>
+                            <Divider sx={{ mb: 2 }} />
+
+                            {/* Load recipes */}
+                            {loading ? (
+                                <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                                    <CircularProgress color="secondary" />
+                                </Box>
+                            ) : (
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                                    {recipes.length > 0 ? recipes.slice(0, 5).map((recipe: any) => ( // Limit to 5 recent
+                                        <Card key={recipe.RowKey} variant="outlined" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                                            <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: '16px !important' }}>
+                                                <Box>
+                                                    <Typography fontWeight="600">{recipe.Title || recipe.title}</Typography>
+                                                    <Typography variant="caption" color="text.secondary">
+                                                        Added {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Just now"}
+                                                    </Typography>
+                                                </Box>
+                                                <Button size="small" color="secondary" variant="outlined">Open</Button>
+                                            </CardContent>
+                                        </Card>
+                                    )) : (
+                                        <Box sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+                                            <Typography>No recipes found.</Typography>
+                                            <Typography variant="caption">Start by creating a new one!</Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+                            )}
+                        </Paper>
+                    </Grid>
                 </Grid>
-            </Grid>
-        </Container>
+            </Container>
+        </Box>
     );
 };
 
