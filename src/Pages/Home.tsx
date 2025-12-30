@@ -102,6 +102,7 @@ const Home = () => {
                                 <ActionCard
                                     title="Groceries"
                                     icon={<LocalGroceryStoreIcon sx={{ fontSize: 40 }} />}
+                                    onClick={() => navigate('/groceries')}
                                 />
                             </Grid>
                             <Grid item xs={6}>

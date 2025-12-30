@@ -12,6 +12,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import LinkIcon from '@mui/icons-material/Link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { useRecipes } from '../Context/RecipeContext';
 
 const CreateRecipe = () => {
     const [recipeName, setRecipeName] = useState('');
@@ -21,6 +22,7 @@ const CreateRecipe = () => {
     const [bulkIngredients, setBulkIngredients] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
+    const { addToGroceryList } = useRecipes();
 
     const handleAddIngredient = () => {
         if (ingredientInput.trim()) {
@@ -228,6 +230,7 @@ const CreateRecipe = () => {
                                                         <IconButton 
                                                             aria-label="add to grocery" 
                                                             size="small" 
+                                                            onClick={() => addToGroceryList(ingredient)}
                                                             sx={{ 
                                                                 mr: 1,
                                                                 '&:hover': {

@@ -8,6 +8,23 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
+    const [groceryList, setGroceryList] = useState<string[]>([]);
+
+    const addToGroceryList = (ingredient: string) => {
+        if (!groceryList.includes(ingredient)) {
+            setGroceryList([...groceryList, ingredient]);
+        }
+    };
+
+    const removeFromGroceryList = (ingredient: string) => {
+        setGroceryList(groceryList.filter(item => item !== ingredient));
+    };
+
+    const MOCK_RECIPES = [
+        { RowKey: '1', Title: 'Classic Pancakes', Timestamp: new Date().toISOString() },
+        { RowKey: '2', Title: 'Spaghetti Bolognese', Timestamp: new Date().toISOString() },
+        { RowKey: '3', Title: 'Chicken Salad', Timestamp: new Date().toISOString() }
+    ];
 
     const fetchRecipes = async () => {
         // Guard: Don't fetch if already fetching or if we already have data
@@ -35,15 +52,16 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
                 hasFetched.current = false;
             }
         } catch (error) {
+            console.warn("Backend not reachable (Failed to fetch). Using mock data for development.");
+            setRecipes(MOCK_RECIPES);
             hasFetched.current = false; // Reset on error so we can retry
-            console.error("Context Fetch Error:", error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <RecipeContext.Provider value={{ recipes, fetchRecipes, loading }}>
+        <RecipeContext.Provider value={{ recipes, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList }}>
             {children}
         </RecipeContext.Provider>
     );

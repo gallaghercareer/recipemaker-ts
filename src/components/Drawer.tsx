@@ -11,24 +11,35 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import HomeIcon from '@mui/icons-material/Home';
+import { useNavigate } from 'react-router-dom';
 
 export default function TemporaryDrawer() {
     const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
 
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
 
+    const menuItems = [
+        { text: 'Home', icon: <HomeIcon />, path: '/Home' },
+        { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
+        { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
+    ];
+
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             <List>
-                {['My Recipes', 'Categories', 'Grocery List', 'Contact Creator'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
+                {menuItems.map((item) => (
+                    <ListItem key={item.text} disablePadding>
+                        <ListItemButton onClick={() => navigate(item.path)}>
                             <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                                {item.icon}
                             </ListItemIcon>
-                            <ListItemText primary={text} />
+                            <ListItemText primary={item.text} />
                         </ListItemButton>
                     </ListItem>
                 ))}
