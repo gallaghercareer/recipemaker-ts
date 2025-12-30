@@ -106,7 +106,7 @@ const Home = () => {
                             </Grid>
                             <Grid item xs={6}>
                                 <ActionCard
-                                    title="Randomize"
+                                    title="Recipes"
                                     icon={<ShuffleIcon sx={{ fontSize: 40 }} />}
                                 />
                             </Grid>

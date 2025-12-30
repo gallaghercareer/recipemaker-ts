@@ -7,6 +7,9 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SaveIcon from '@mui/icons-material/Save';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import LinkIcon from '@mui/icons-material/Link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 
@@ -16,6 +19,8 @@ const CreateRecipe = () => {
     const [ingredientInput, setIngredientInput] = useState('');
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [bulkIngredients, setBulkIngredients] = useState('');
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const [editingText, setEditingText] = useState('');
 
     const handleAddIngredient = () => {
         if (ingredientInput.trim()) {
@@ -27,6 +32,26 @@ const CreateRecipe = () => {
     const handleDeleteIngredient = (index: number) => {
         const newIngredients = ingredients.filter((_, i) => i !== index);
         setIngredients(newIngredients);
+    };
+
+    const startEditing = (index: number, text: string) => {
+        setEditingIndex(index);
+        setEditingText(text);
+    };
+
+    const saveEditing = (index: number) => {
+        if (editingText.trim()) {
+            const newIngredients = [...ingredients];
+            newIngredients[index] = editingText.trim();
+            setIngredients(newIngredients);
+        }
+        setEditingIndex(null);
+        setEditingText('');
+    };
+
+    const cancelEditing = () => {
+        setEditingIndex(null);
+        setEditingText('');
     };
 
     const handleBulkParse = () => {
@@ -116,9 +141,11 @@ const CreateRecipe = () => {
                                 <Button 
                                     onClick={handleBulkParse} 
                                     sx={{ mt: 1 }} 
+                                    variant="contained"
+                                    color="secondary"
                                     disabled={!bulkIngredients.trim()}
                                 >
-                                    Parse & Add
+                                    List Add+
                                 </Button>
                             </Box>
                         </Paper>
@@ -160,51 +187,75 @@ const CreateRecipe = () => {
                                                 borderColor: 'divider',
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
-                                                alignItems: 'flex-start', // Align to top for multiline text
-                                                pr: 1 // Add some padding
+                                                alignItems: editingIndex === index ? 'center' : 'flex-start',
+                                                pr: 1
                                             }}
                                         >
-                                            <ListItemText 
-                                                primary={ingredient} 
-                                                primaryTypographyProps={{ 
-                                                    style: { 
-                                                        whiteSpace: 'normal', 
-                                                        wordBreak: 'break-word' 
-                                                    } 
-                                                }}
-                                                sx={{ mr: 2, my: 0.5 }} // Add margin right to separate from icons
-                                            />
-                                            <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, mt: 0.5 }}>
-                                                    <IconButton 
-                                                        aria-label="add to grocery" 
+                                            {editingIndex === index ? (
+                                                <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1 }}>
+                                                    <TextField 
+                                                        fullWidth 
                                                         size="small" 
-                                                        sx={{ 
-                                                            mr: 1,
-                                                            '&:hover': {
-                                                                color: 'success.main',
-                                                                backgroundColor: 'rgba(46, 125, 50, 0.1)'
-                                                            }
-                                                        }}
-                                                    >
-                                                        <ShoppingBasketIcon fontSize="small" />
-                                                    </IconButton>
-                                                    <IconButton 
-                                                        edge="end" 
-                                                        aria-label="delete" 
-                                                        size="small" 
-                                                        onClick={() => handleDeleteIngredient(index)}
-                                                        sx={{ 
-                                                            '&:hover': { 
-                                                                color: 'error.main',
-                                                                bgcolor: 'error.light',
-                                                                // or use transparent red
-                                                                backgroundColor: 'rgba(211, 47, 47, 0.1)'
+                                                        value={editingText} 
+                                                        onChange={(e) => setEditingText(e.target.value)}
+                                                        autoFocus
+                                                        onKeyPress={(e) => e.key === 'Enter' && saveEditing(index)}
+                                                    />
+                                                    <IconButton size="small" onClick={() => saveEditing(index)} color="primary"><CheckIcon fontSize="small" /></IconButton>
+                                                    <IconButton size="small" onClick={cancelEditing} color="error"><CloseIcon fontSize="small" /></IconButton>
+                                                </Box>
+                                            ) : (
+                                                <>
+                                                    <ListItemText 
+                                                        primary={ingredient} 
+                                                        primaryTypographyProps={{ 
+                                                            style: { 
+                                                                whiteSpace: 'normal', 
+                                                                wordBreak: 'break-word' 
                                                             } 
                                                         }}
-                                                    >
-                                                        <DeleteIcon fontSize="small" />
-                                                    </IconButton>
-                                            </Box>
+                                                        sx={{ mr: 2, my: 0.5 }}
+                                                    />
+                                                    <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, mt: 0.5 }}>
+                                                        <IconButton 
+                                                            aria-label="edit" 
+                                                            size="small" 
+                                                            onClick={() => startEditing(index, ingredient)}
+                                                            sx={{ mr: 1, '&:hover': { color: 'primary.main', bgcolor: 'primary.light' } }}
+                                                        >
+                                                            <EditIcon fontSize="small" />
+                                                        </IconButton>
+                                                        <IconButton 
+                                                            aria-label="add to grocery" 
+                                                            size="small" 
+                                                            sx={{ 
+                                                                mr: 1,
+                                                                '&:hover': {
+                                                                    color: 'success.main',
+                                                                    backgroundColor: 'rgba(46, 125, 50, 0.1)'
+                                                                }
+                                                            }}
+                                                        >
+                                                            <ShoppingBasketIcon fontSize="small" />
+                                                        </IconButton>
+                                                        <IconButton 
+                                                            edge="end" 
+                                                            aria-label="delete" 
+                                                            size="small" 
+                                                            onClick={() => handleDeleteIngredient(index)}
+                                                            sx={{ 
+                                                                '&:hover': { 
+                                                                    color: 'error.main',
+                                                                    bgcolor: 'error.light',
+                                                                    backgroundColor: 'rgba(211, 47, 47, 0.1)'
+                                                                } 
+                                                            }}
+                                                        >
+                                                            <DeleteIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </Box>
+                                                </>
+                                            )}
                                         </ListItem>
                                     ))}
                                 </List>
