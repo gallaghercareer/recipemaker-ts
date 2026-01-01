@@ -15,6 +15,7 @@ import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
+import { useIsAuthenticated } from "@azure/msal-react";
 
 export default function TemporaryDrawer() {
     const [open, setOpen] = React.useState(false);
@@ -23,13 +24,22 @@ export default function TemporaryDrawer() {
     const toggleDrawer = (newOpen: boolean) => () => {
         setOpen(newOpen);
     };
+    const isAuthenticated = useIsAuthenticated();
 
-    const menuItems = [
-        { text: 'Home', icon: <HomeIcon />, path: '/Home' },
-        { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
-        { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
-        { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
-    ];
+    let menuItems = [];
+
+    if (!isAuthenticated) {
+        menuItems = [
+            { text: 'Home', icon: <HomeIcon />, path: '/' }
+        ];
+    } else {
+        menuItems = [
+            { text: 'Home', icon: <HomeIcon />, path: '/Home' },
+            { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
+            { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
+            { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
+        ];
+    }
 
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
@@ -47,7 +57,7 @@ export default function TemporaryDrawer() {
             </List>
             <Divider />
             <List>
-                {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                {['Back to Portfolio', 'App Diagram', 'Contact Me'].map((text, index) => (
                     <ListItem key={text} disablePadding>
                         <ListItemButton>
                             <ListItemIcon>
