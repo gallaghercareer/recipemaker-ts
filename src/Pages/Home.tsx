@@ -109,6 +109,7 @@ const Home = () => {
                                 <ActionCard
                                     title="Recipes"
                                     icon={<ShuffleIcon sx={{ fontSize: 40 }} />}
+                                    onClick={() => navigate('/recipes')}
                                 />
                             </Grid>
                         </Grid>

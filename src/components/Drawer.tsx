@@ -27,6 +27,7 @@ export default function TemporaryDrawer() {
     const menuItems = [
         { text: 'Home', icon: <HomeIcon />, path: '/Home' },
         { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
+        { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
         { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
     ];
 

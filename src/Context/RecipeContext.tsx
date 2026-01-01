@@ -5,7 +5,7 @@ const RecipeContext = createContext<any>(null);
 
 export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const { accounts, instance } = useMsal();
-    const [recipes, setRecipes] = useState([]);
+    const [recipes, setRecipes] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
     const [groceryList, setGroceryList] = useState<string[]>([]);
@@ -20,11 +20,10 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         setGroceryList(groceryList.filter(item => item !== ingredient));
     };
 
-    const MOCK_RECIPES = [
-        { RowKey: '1', Title: 'Classic Pancakes', Timestamp: new Date().toISOString() },
-        { RowKey: '2', Title: 'Spaghetti Bolognese', Timestamp: new Date().toISOString() },
-        { RowKey: '3', Title: 'Chicken Salad', Timestamp: new Date().toISOString() }
-    ];
+    const addRecipe = (newRecipe: any) => {
+        setRecipes((prevRecipes: any) => [newRecipe, ...prevRecipes]);
+    };
+
 
     const fetchRecipes = async () => {
         // Guard: Don't fetch if already fetching or if we already have data
@@ -52,16 +51,15 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
                 hasFetched.current = false;
             }
         } catch (error) {
-            console.warn("Backend not reachable (Failed to fetch). Using mock data for development.");
-            setRecipes(MOCK_RECIPES);
-            hasFetched.current = false; // Reset on error so we can retry
+
+            console.log(error); // Reset on error so we can retry
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <RecipeContext.Provider value={{ recipes, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList }}>
+        <RecipeContext.Provider value={{ recipes, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe }}>
             {children}
         </RecipeContext.Provider>
     );

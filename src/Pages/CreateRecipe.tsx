@@ -13,6 +13,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import LinkIcon from '@mui/icons-material/Link';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useRecipes } from '../Context/RecipeContext';
+import { useNavigate } from 'react-router-dom';
 
 const CreateRecipe = () => {
     const [recipeName, setRecipeName] = useState('');
@@ -22,7 +23,23 @@ const CreateRecipe = () => {
     const [bulkIngredients, setBulkIngredients] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
-    const { addToGroceryList } = useRecipes();
+    const { addToGroceryList, addRecipe } = useRecipes();
+    const navigate = useNavigate();
+
+    const handleSaveRecipe = () => {
+        if (!recipeName.trim()) return;
+
+        const newRecipe = {
+            RowKey: Date.now().toString(),
+            Title: recipeName,
+            Url: recipeUrl,
+            Ingredients: ingredients,
+            Timestamp: new Date().toISOString()
+        };
+
+        addRecipe(newRecipe);
+        navigate('/Home');
+    };
 
     const handleAddIngredient = () => {
         if (ingredientInput.trim()) {
@@ -159,6 +176,7 @@ const CreateRecipe = () => {
                                 size="large"
                                 startIcon={<SaveIcon />}
                                 sx={{ px: 4, py: 1.5, borderRadius: 8 }}
+                                onClick={handleSaveRecipe}
                             >
                                 Save Recipe
                             </Button>
