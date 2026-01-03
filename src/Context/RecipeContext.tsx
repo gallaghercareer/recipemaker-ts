@@ -5,11 +5,12 @@ const RecipeContext = createContext<any>(null);
 
 export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const { accounts, instance } = useMsal();
-    
+
     const [recipes, setRecipes] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
     const [groceryList, setGroceryList] = useState<string[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
 
     const addToGroceryList = (ingredient: string) => {
         if (!groceryList.includes(ingredient)) {
@@ -24,14 +25,11 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const addRecipe = async (newRecipe: any) => {
         try {
             setLoading(true);
-
-            // 1. Get the token for the API call
             const tokenResponse = await instance.acquireTokenSilent({
                 scopes: [import.meta.env.VITE_SCOPE],
                 account: accounts[0]
             });
 
-            // 2. POST to your Azure Function
             const response = await fetch(`${import.meta.env.VITE_API_URL}/CreateRecipe`, {
                 method: 'POST',
                 headers: {
@@ -42,25 +40,29 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             });
 
             if (response.ok) {
-                const savedRecipe = await response.json();
-                // 3. Update local state so the UI reflects the change immediately
-                setRecipes((prev: any[]) => [savedRecipe, ...prev]);
+                const data = await response.json();
+                // data is now { recipe: {...}, category: {...} }
+
+                setRecipes((prev) => [data.recipe, ...prev]);
+
+                // Add the category to state if it's not already there
+                setCategories((prev) => {
+                    const exists = prev.some(c => c.RowKey === data.category.RowKey);
+                    return exists ? prev : [...prev, data.category];
+                });
+
                 return true;
-            } else {
-                console.error("Failed to save recipe to Azure");
-                return false;
             }
+            return false;
         } catch (error) {
             console.error("Error in addRecipe:", error);
             return false;
         } finally {
             setLoading(false);
         }
-    }
-
+    };
 
     const fetchRecipes = async () => {
-        // Guard: Don't fetch if already fetching or if we already have data
         if (hasFetched.current || accounts.length === 0) return;
 
         try {
@@ -75,25 +77,26 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             const response = await fetch(`${import.meta.env.VITE_API_URL}/GetRecipes`, {
                 headers: { "Authorization": `Bearer ${tokenResponse.accessToken}` }
             });
-            // Check if the server actually sent data back
+
             if (response.ok) {
-                const data = await response.json();
-                setRecipes(data);
-            } else {
-                // If it's a 401, this will now log properly instead of crashing
-                console.error(`Backend returned ${response.status}: ${response.statusText}`);
-                hasFetched.current = false;
+                const allItems: any[] = await response.json();
+
+                // Separate the "Mixed Bag" from Azure Table Storage
+                const onlyRecipes = allItems.filter(item => item.RowKey && item.RowKey.startsWith('recipe_'));
+                const onlyCategories = allItems.filter(item => item.RowKey && item.RowKey.startsWith('category_'));
+
+                setRecipes(onlyRecipes);
+                setCategories(onlyCategories);
             }
         } catch (error) {
-             hasFetched.current = false;
-            console.error(error); // Reset on error so we can retry
+            hasFetched.current = false;
+            console.error(error);
         } finally {
             setLoading(false);
         }
     };
-
     return (
-        <RecipeContext.Provider value={{ recipes, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe }}>
             {children}
         </RecipeContext.Provider>
     );

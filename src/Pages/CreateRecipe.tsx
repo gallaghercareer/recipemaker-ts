@@ -36,7 +36,7 @@ const CreateRecipe = () => {
             Title: recipeName,
             Url: recipeUrl,
             Ingredients: JSON.stringify(ingredients), // Store as JSON string
-            Steps: steps, 
+            Steps: steps,
             Category: category, // Placeholder until category is implemented
         };
 
@@ -302,7 +302,7 @@ const CreateRecipe = () => {
                                 </Box>
                             )}
                         </Paper>
-                        
+
                         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
                             <Button
                                 variant="contained"

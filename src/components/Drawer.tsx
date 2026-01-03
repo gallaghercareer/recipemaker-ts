@@ -13,6 +13,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CategoryIcon from '@mui/icons-material/Category';
 import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import { useIsAuthenticated } from "@azure/msal-react";
@@ -33,12 +34,13 @@ export default function TemporaryDrawer() {
             { text: 'Home', icon: <HomeIcon />, path: '/' }
         ];
     } else {
-        menuItems = [
-            { text: 'Home', icon: <HomeIcon />, path: '/Home' },
-            { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
-            { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
-            { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
-        ];
+    const menuItems = [
+        { text: 'Home', icon: <HomeIcon />, path: isAuthenticated ? '/Home' : '/' },
+        { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
+        { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
+        { text: 'Categories', icon: <CategoryIcon />, path: '/categories' },
+        { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
+    ];
     }
 
     const DrawerList = (

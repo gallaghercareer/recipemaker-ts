@@ -7,6 +7,7 @@ import Home from './Pages/Home'
 import CreateRecipe from './Pages/CreateRecipe'
 import Groceries from './Pages/Groceries'
 import ViewRecipes from './Pages/ViewRecipes'
+import Categories from './Pages/Categories'
 import { RecipeProvider } from './Context/RecipeContext.tsx'
 import { useState, useMemo } from 'react';
 import { ThemeProvider, createTheme, CssBaseline, type PaletteMode } from '@mui/material';
@@ -52,6 +53,7 @@ function App() {
                 <Route path="/create-recipe" element={<CreateRecipe />} />
                 <Route path="/groceries" element={<Groceries />} />
                 <Route path="/recipes" element={<ViewRecipes />} />
+                <Route path="/categories" element={<Categories />} />
               </Routes>
             </AuthenticatedTemplate>
 

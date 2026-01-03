@@ -96,6 +96,7 @@ const Home = () => {
                                 <ActionCard
                                     title="Categories"
                                     icon={<CategoryIcon sx={{ fontSize: 40 }} />}
+                                    onClick={() => navigate('/categories')}
                                 />
                             </Grid>
                             <Grid item xs={6}>
