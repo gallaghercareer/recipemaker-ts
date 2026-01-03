@@ -179,19 +179,6 @@ const CreateRecipe = () => {
                                 </Button>
                             </Box>
                         </Paper>
-
-                        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                startIcon={<SaveIcon />}
-                                sx={{ px: 4, py: 1.5, borderRadius: 8 }}
-                                onClick={handleSaveRecipe}
-                            >
-                                Save Recipe
-                            </Button>
-                        </Box>
                     </Grid>
 
                     {/* Right Column: Preview/List */}
@@ -297,6 +284,18 @@ const CreateRecipe = () => {
                                 </Box>
                             )}
                         </Paper>
+                        
+                        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                sx={{ px: 6, py: 1.5, borderRadius: 8 }}
+                                onClick={handleSaveRecipe}
+                            >
+                                Create Recipe
+                            </Button>
+                        </Box>
                     </Grid>
                 </Grid>
             </Container>
