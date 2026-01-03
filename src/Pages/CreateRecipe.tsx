@@ -22,6 +22,7 @@ const CreateRecipe = () => {
     const [ingredientInput, setIngredientInput] = useState('');
     const [ingredients, setIngredients] = useState<string[]>([]);
     const [bulkIngredients, setBulkIngredients] = useState('');
+    const [steps, setSteps] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
     const { addToGroceryList, addRecipe } = useRecipes();
@@ -35,7 +36,7 @@ const CreateRecipe = () => {
             Title: recipeName,
             Url: recipeUrl,
             Ingredients: JSON.stringify(ingredients), // Store as JSON string
-            Steps: "", // Placeholder until steps are implemented
+            Steps: steps, 
             Category: category, // Placeholder until category is implemented
         };
 
@@ -177,6 +178,23 @@ const CreateRecipe = () => {
                                 >
                                     List Add+
                                 </Button>
+                            </Box>
+
+                            <Divider sx={{ my: 4 }} />
+
+                            {/* Preparation Steps */}
+                            <Box sx={{ mb: 4 }}>
+                                <Typography variant="h6" gutterBottom fontWeight="600">Preparation Steps</Typography>
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={6}
+                                    variant="outlined"
+                                    placeholder="1. Preheat oven to 350°F..."
+                                    value={steps}
+                                    onChange={(e) => setSteps(e.target.value)}
+                                    helperText="Describe how to prepare this dish"
+                                />
                             </Box>
                         </Paper>
                     </Grid>
