@@ -125,11 +125,41 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const updateRecipe = async (updatedRecipe: any) => {
+        try {
+            setLoading(true);
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/UpdateRecipe`, {
+                method: 'PUT',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(updatedRecipe)
+            });
+
+            if (response.ok) {
+                await fetchRecipes(true);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Error in updateRecipe:", error);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, updateRecipe }}>
             {children}
         </RecipeContext.Provider>
     );
 };
 
-export const useRecipes = () => useContext(RecipeContext);
+export const useRecipes = () => useContext(RecipeContext);  
