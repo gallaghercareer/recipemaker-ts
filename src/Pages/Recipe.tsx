@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipes } from '../Context/RecipeContext';
 import {
     Box, Container, Typography, Chip, Divider, Paper, List, ListItem, ListItemText, ListItemIcon, Button, Grid, IconButton,
-    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -116,18 +116,6 @@ const Recipe = () => {
                             </Box>
                             {/* Placeholder for future metadata like Prep Time or Servings */}
                         </Box>
-                        {recipe.Url && (
-                             <Button
-                                href={recipe.Url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                startIcon={<LinkIcon />}
-                                sx={{ mt: 2 }}
-                                color="primary"
-                            >
-                                Original Source
-                            </Button>
-                        )}
                     </Box>
 
                     <Divider sx={{ mb: 4 }} />
@@ -197,6 +185,44 @@ const Recipe = () => {
                         </Grid>
                     </Grid>
                 </Paper>
+
+                {recipe.Url && (
+                    <Card
+                        variant="outlined"
+                        onClick={() => window.open(recipe.Url, "_blank")}
+                        sx={{
+                            mt: 3,
+                            p: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            cursor: 'pointer',
+                            '&:hover': {
+                                bgcolor: 'action.hover',
+                                borderColor: 'primary.main'
+                            }
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                            <LinkIcon color="primary" />
+                            <Box>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    Original Source
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
+                                    {recipe.Url}
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            component="span" // Since the card is clickable, button is visual aid or fallback
+                        >
+                            Open Link
+                        </Button>
+                    </Card>
+                )}
 
                 {/* Delete Confirmation Dialog */}
                 <Dialog
