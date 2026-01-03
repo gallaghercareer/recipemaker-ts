@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipes } from '../Context/RecipeContext';
 import {
     Box, Container, Typography, Chip, Divider, Paper, List, ListItem, ListItemText, ListItemIcon, Button, Grid, IconButton,
-    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, TextField
+    Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, TextField, Autocomplete
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -20,9 +20,23 @@ import AddIcon from '@mui/icons-material/Add';
 const Recipe = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { recipes, fetchRecipes, loading, deleteRecipe, updateRecipe } = useRecipes();
+    const { recipes, categories, fetchRecipes, loading, deleteRecipe, updateRecipe } = useRecipes();
     const [recipe, setRecipe] = useState<any>(null);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+    const categoryOptions = useMemo(() => {
+        const names = categories.map((c: any) => {
+            if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
+                 return c.RowKey.replace(/^(category_|Category_)/i, '');
+            }
+            if (c.Name) return c.Name;
+            if (c.Title) return c.Title;
+            if (c.Category) return c.Category;
+            return c.RowKey || "Unknown";
+        }).filter((c: any) => c && c !== "Unknown");
+        
+        return Array.from(new Set(names)).sort();
+    }, [categories]);
 
     // Edit Mode State
     const [isEditing, setIsEditing] = useState(false);
@@ -250,12 +264,24 @@ const Recipe = () => {
                                         }}
                                         sx={{ mb: 2 }}
                                     />
-                                    <TextField
-                                        label="Category"
-                                        variant="outlined"
+                                    <Autocomplete
+                                        freeSolo
+                                        options={categoryOptions}
                                         value={editData.Category}
-                                        onChange={(e) => setEditData({ ...editData, Category: e.target.value })}
-                                        fullWidth
+                                        onChange={(event: any, newValue: string | null) => {
+                                            setEditData({ ...editData, Category: newValue || '' });
+                                        }}
+                                        onInputChange={(event, newInputValue) => {
+                                            setEditData({ ...editData, Category: newInputValue });
+                                        }}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                label="Category"
+                                                variant="outlined"
+                                                fullWidth
+                                            />
+                                        )}
                                     />
                                 </Box>
 

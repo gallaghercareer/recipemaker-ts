@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
     Box, Container, Typography, TextField, Button, Grid, Paper,
-    List, ListItem, ListItemText, ListItemIcon, IconButton, Divider, Chip
+    List, ListItem, ListItemText, ListItemIcon, IconButton, Divider, Chip, Autocomplete
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -25,8 +25,22 @@ const CreateRecipe = () => {
     const [steps, setSteps] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
-    const { addToGroceryList, addRecipe } = useRecipes();
+    const { addToGroceryList, addRecipe, categories } = useRecipes();
     const navigate = useNavigate();
+
+    const categoryOptions = useMemo(() => {
+        const names = categories.map((c: any) => {
+            if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
+                 return c.RowKey.replace(/^(category_|Category_)/i, '');
+            }
+            if (c.Name) return c.Name;
+            if (c.Title) return c.Title;
+            if (c.Category) return c.Category;
+            return c.RowKey || "Unknown";
+        }).filter((c: any) => c && c !== "Unknown");
+        
+        return Array.from(new Set(names)).sort();
+    }, [categories]);
 
 
     const handleSaveRecipe = () => {
@@ -120,14 +134,25 @@ const CreateRecipe = () => {
                                     }}
                                     placeholder="https://..."
                                 />
-                                <TextField
-                                    fullWidth
-                                    label="Category"
-                                    variant="outlined"
+                                <Autocomplete
+                                    freeSolo
+                                    options={categoryOptions}
                                     value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                    sx={{ mt: 2 }}
-                                    placeholder="e.g., Breakfast, Italian, Desserts"
+                                    onChange={(event: any, newValue: string | null) => {
+                                        setCategory(newValue || '');
+                                    }}
+                                    onInputChange={(event, newInputValue) => {
+                                        setCategory(newInputValue);
+                                    }}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label="Category"
+                                            variant="outlined"
+                                            sx={{ mt: 2 }}
+                                            placeholder="e.g., Breakfast, Italian, Desserts"
+                                        />
+                                    )}
                                 />
                             </Box>
 
