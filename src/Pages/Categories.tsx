@@ -6,11 +6,32 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
-    const { recipes } = useRecipes();
+    const { recipes, categories } = useRecipes();
     const navigate = useNavigate();
 
-    // Derive unique categories from recipes
-    const derivedCategories = Array.from(new Set(recipes.map((r: any) => r.Category || "Uncategorized")))
+    // 1. Get names from stored Category entities
+    const storedCategoryNames = categories.map((c: any) => {
+        // Prioritize parsing RowKey if it follows the known pattern "category_..."
+        // This avoids issues where the 'Category' property is empty or 'Title' is missing.
+        if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
+             return c.RowKey.replace(/^(category_|Category_)/i, '');
+        }
+
+        // Fallback to properties if RowKey doesn't match the pattern
+        if (c.Name) return c.Name;
+        if (c.Title) return c.Title;
+        if (c.Category) return c.Category;
+        
+        // Final fallback
+        return c.RowKey || "Unknown";
+    });
+
+    // 2. Get names from Recipes (legacy or ad-hoc categories)
+    const recipeCategoryNames = recipes.map((r: any) => r.Category || "Uncategorized");
+
+    // 3. Union and Deduplicate
+    const derivedCategories = Array.from(new Set([...storedCategoryNames, ...recipeCategoryNames]))
+        .filter((c: any) => c && c !== "Unknown") // Filter out invalid
         .sort((a: any, b: any) => {
             if (a === "Uncategorized") return 1;
             if (b === "Uncategorized") return -1;

@@ -81,7 +81,8 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
 
                 // Separate the "Mixed Bag" from Azure Table Storage
                 const onlyRecipes = allItems.filter(item => item.RowKey && item.RowKey.startsWith('recipe_'));
-                const onlyCategories = allItems.filter(item => item.RowKey && item.RowKey.startsWith('category_'));
+                // Assume anything that isn't a recipe is a category (or at least metadata we want to classify as such for now)
+                const onlyCategories = allItems.filter(item => item.RowKey && !item.RowKey.startsWith('recipe_'));
 
                 setRecipes(onlyRecipes);
                 setCategories(onlyCategories);
