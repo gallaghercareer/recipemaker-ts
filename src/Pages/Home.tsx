@@ -144,8 +144,8 @@ const Home = () => {
                                 </Box>
                             ) : (
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                                    {recipes.length > 0 ? recipes.slice(0, 5).map((recipe: any) => ( // Limit to 5 recent
-                                        <Card key={recipe.RowKey} variant="outlined" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
+                                    {recipes.length > 0 ? recipes.slice(0, 5).map((recipe: any, index: number) => ( // Limit to 5 recent
+                                        <Card key={recipe.RowKey || index} variant="outlined" sx={{ '&:hover': { bgcolor: 'action.hover' } }}>
                                             <CardContent sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', py: '16px !important' }}>
                                                 <Box>
                                                     <Typography fontWeight="600">{recipe.Title || recipe.title}</Typography>

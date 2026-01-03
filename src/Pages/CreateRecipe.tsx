@@ -16,6 +16,7 @@ import { useRecipes } from '../Context/RecipeContext';
 import { useNavigate } from 'react-router-dom';
 
 const CreateRecipe = () => {
+    const [category, setCategory] = useState('');
     const [recipeName, setRecipeName] = useState('');
     const [recipeUrl, setRecipeUrl] = useState('');
     const [ingredientInput, setIngredientInput] = useState('');
@@ -26,15 +27,16 @@ const CreateRecipe = () => {
     const { addToGroceryList, addRecipe } = useRecipes();
     const navigate = useNavigate();
 
+
     const handleSaveRecipe = () => {
         if (!recipeName.trim()) return;
 
         const newRecipe = {
-            RowKey: Date.now().toString(),
             Title: recipeName,
             Url: recipeUrl,
-            Ingredients: ingredients,
-            Timestamp: new Date().toISOString()
+            Ingredients: JSON.stringify(ingredients), // Store as JSON string
+            Steps: "", // Placeholder until steps are implemented
+            Category: category, // Placeholder until category is implemented
         };
 
         addRecipe(newRecipe);
@@ -93,7 +95,7 @@ const CreateRecipe = () => {
                     {/* Left Column: Form Inputs */}
                     <Grid item xs={12} md={7}>
                         <Paper variant="outlined" sx={{ p: 4, bgcolor: 'background.paper', borderRadius: 2 }}>
-                            
+
                             {/* Recipe Name */}
                             <Box sx={{ mb: 4 }}>
                                 <Typography variant="h6" gutterBottom fontWeight="600">Recipe Details</Typography>
@@ -117,6 +119,15 @@ const CreateRecipe = () => {
                                     }}
                                     placeholder="https://..."
                                 />
+                                <TextField
+                                    fullWidth
+                                    label="Category"
+                                    variant="outlined"
+                                    value={category}
+                                    onChange={(e) => setCategory(e.target.value)}
+                                    sx={{ mt: 2 }}
+                                    placeholder="e.g., Breakfast, Italian, Desserts"
+                                />
                             </Box>
 
                             <Divider sx={{ my: 4 }} />
@@ -133,9 +144,9 @@ const CreateRecipe = () => {
                                         onChange={(e) => setIngredientInput(e.target.value)}
                                         onKeyPress={(e) => e.key === 'Enter' && handleAddIngredient()}
                                     />
-                                    <Button 
-                                        variant="contained" 
-                                        color="secondary" 
+                                    <Button
+                                        variant="contained"
+                                        color="secondary"
                                         onClick={handleAddIngredient}
                                         startIcon={<AddIcon />}
                                     >
@@ -157,9 +168,9 @@ const CreateRecipe = () => {
                                     onChange={(e) => setBulkIngredients(e.target.value)}
                                     helperText="Use commas to separate ingredients"
                                 />
-                                <Button 
-                                    onClick={handleBulkParse} 
-                                    sx={{ mt: 1 }} 
+                                <Button
+                                    onClick={handleBulkParse}
+                                    sx={{ mt: 1 }}
                                     variant="contained"
                                     color="secondary"
                                     disabled={!bulkIngredients.trim()}
@@ -168,11 +179,11 @@ const CreateRecipe = () => {
                                 </Button>
                             </Box>
                         </Paper>
-                        
+
                         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-                             <Button 
-                                variant="contained" 
-                                color="primary" 
+                            <Button
+                                variant="contained"
+                                color="primary"
                                 size="large"
                                 startIcon={<SaveIcon />}
                                 sx={{ px: 4, py: 1.5, borderRadius: 8 }}
@@ -185,7 +196,7 @@ const CreateRecipe = () => {
 
                     {/* Right Column: Preview/List */}
                     <Grid item xs={12} md={5}>
-                         <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
+                        <Paper elevation={0} sx={{ p: 3, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 2 }}>
                             <Typography variant="h6" fontFamily="Playfair Display" gutterBottom>
                                 Ingredient List
                             </Typography>
@@ -193,15 +204,15 @@ const CreateRecipe = () => {
                                 {ingredients.length} items added
                             </Typography>
                             <Divider sx={{ mb: 2 }} />
-                            
+
                             {ingredients.length > 0 ? (
                                 <List dense>
                                     {ingredients.map((ingredient, index) => (
-                                        <ListItem 
+                                        <ListItem
                                             key={index}
-                                            sx={{ 
-                                                bgcolor: 'background.default', 
-                                                mb: 1, 
+                                            sx={{
+                                                bgcolor: 'background.default',
+                                                mb: 1,
                                                 borderRadius: 1,
                                                 border: '1px solid',
                                                 borderColor: 'divider',
@@ -213,10 +224,10 @@ const CreateRecipe = () => {
                                         >
                                             {editingIndex === index ? (
                                                 <Box sx={{ display: 'flex', width: '100%', alignItems: 'center', gap: 1 }}>
-                                                    <TextField 
-                                                        fullWidth 
-                                                        size="small" 
-                                                        value={editingText} 
+                                                    <TextField
+                                                        fullWidth
+                                                        size="small"
+                                                        value={editingText}
                                                         onChange={(e) => setEditingText(e.target.value)}
                                                         autoFocus
                                                         onKeyPress={(e) => e.key === 'Enter' && saveEditing(index)}
@@ -226,30 +237,30 @@ const CreateRecipe = () => {
                                                 </Box>
                                             ) : (
                                                 <>
-                                                    <ListItemText 
-                                                        primary={ingredient} 
-                                                        primaryTypographyProps={{ 
-                                                            style: { 
-                                                                whiteSpace: 'normal', 
-                                                                wordBreak: 'break-word' 
-                                                            } 
+                                                    <ListItemText
+                                                        primary={ingredient}
+                                                        primaryTypographyProps={{
+                                                            style: {
+                                                                whiteSpace: 'normal',
+                                                                wordBreak: 'break-word'
+                                                            }
                                                         }}
                                                         sx={{ mr: 2, my: 0.5 }}
                                                     />
                                                     <Box sx={{ display: 'flex', alignItems: 'center', flexShrink: 0, mt: 0.5 }}>
-                                                        <IconButton 
-                                                            aria-label="edit" 
-                                                            size="small" 
+                                                        <IconButton
+                                                            aria-label="edit"
+                                                            size="small"
                                                             onClick={() => startEditing(index, ingredient)}
                                                             sx={{ mr: 1, '&:hover': { color: 'primary.main', bgcolor: 'primary.light' } }}
                                                         >
                                                             <EditIcon fontSize="small" />
                                                         </IconButton>
-                                                        <IconButton 
-                                                            aria-label="add to grocery" 
-                                                            size="small" 
+                                                        <IconButton
+                                                            aria-label="add to grocery"
+                                                            size="small"
                                                             onClick={() => addToGroceryList(ingredient)}
-                                                            sx={{ 
+                                                            sx={{
                                                                 mr: 1,
                                                                 '&:hover': {
                                                                     color: 'success.main',
@@ -259,17 +270,17 @@ const CreateRecipe = () => {
                                                         >
                                                             <ShoppingBasketIcon fontSize="small" />
                                                         </IconButton>
-                                                        <IconButton 
-                                                            edge="end" 
-                                                            aria-label="delete" 
-                                                            size="small" 
+                                                        <IconButton
+                                                            edge="end"
+                                                            aria-label="delete"
+                                                            size="small"
                                                             onClick={() => handleDeleteIngredient(index)}
-                                                            sx={{ 
-                                                                '&:hover': { 
+                                                            sx={{
+                                                                '&:hover': {
                                                                     color: 'error.main',
                                                                     bgcolor: 'error.light',
                                                                     backgroundColor: 'rgba(211, 47, 47, 0.1)'
-                                                                } 
+                                                                }
                                                             }}
                                                         >
                                                             <DeleteIcon fontSize="small" />

@@ -5,6 +5,7 @@ const RecipeContext = createContext<any>(null);
 
 export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const { accounts, instance } = useMsal();
+    
     const [recipes, setRecipes] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const hasFetched = useRef(false);
@@ -20,9 +21,42 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         setGroceryList(groceryList.filter(item => item !== ingredient));
     };
 
-    const addRecipe = (newRecipe: any) => {
-        setRecipes((prevRecipes: any) => [newRecipe, ...prevRecipes]);
-    };
+    const addRecipe = async (newRecipe: any) => {
+        try {
+            setLoading(true);
+
+            // 1. Get the token for the API call
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            // 2. POST to your Azure Function
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/CreateRecipe`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(newRecipe)
+            });
+
+            if (response.ok) {
+                const savedRecipe = await response.json();
+                // 3. Update local state so the UI reflects the change immediately
+                setRecipes((prev: any[]) => [savedRecipe, ...prev]);
+                return true;
+            } else {
+                console.error("Failed to save recipe to Azure");
+                return false;
+            }
+        } catch (error) {
+            console.error("Error in addRecipe:", error);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    }
 
 
     const fetchRecipes = async () => {
@@ -38,7 +72,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
                 account: accounts[0]
             });
 
-            const response = await fetch(import.meta.env.VITE_API_URL, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/GetRecipes`, {
                 headers: { "Authorization": `Bearer ${tokenResponse.accessToken}` }
             });
             // Check if the server actually sent data back
@@ -51,8 +85,8 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
                 hasFetched.current = false;
             }
         } catch (error) {
-
-            console.log(error); // Reset on error so we can retry
+             hasFetched.current = false;
+            console.error(error); // Reset on error so we can retry
         } finally {
             setLoading(false);
         }
