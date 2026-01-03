@@ -3,9 +3,11 @@ import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, But
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
     const { recipes } = useRecipes();
+    const navigate = useNavigate();
 
     // Derive unique categories from recipes
     const derivedCategories = Array.from(new Set(recipes.map((r: any) => r.Category || "Uncategorized")))
@@ -36,7 +38,7 @@ const Categories = () => {
                         {derivedCategories.map((categoryName: any, index: number) => {
                             const categoryRecipes = getRecipesByCategory(categoryName);
                             return (
-                                <Accordion key={index} defaultExpanded sx={{ mb: 2, bgcolor: 'background.paper' }}>
+                                <Accordion key={index} sx={{ mb: 2, bgcolor: 'background.paper' }}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls={`panel${index}-content`}
@@ -52,12 +54,12 @@ const Categories = () => {
                                             <Grid container spacing={2}>
                                                 {categoryRecipes.map((recipe: any) => (
                                                     <Grid item xs={12} sm={6} md={4} key={recipe.RowKey || recipe.Title}>
-                                                        <Card variant="outlined" sx={{ '&:hover': { boxShadow: 2 } }}>
+                                                        <Card variant="outlined" sx={{ '&:hover': { boxShadow: 2, cursor: 'pointer' } }} onClick={() => navigate(`/recipe/${recipe.RowKey}`)}>
                                                             <CardContent>
                                                                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                                                                     {recipe.Title}
                                                                 </Typography>
-                                                                <Button size="small" variant="text" color="primary">View Recipe</Button>
+                                                                <Button size="small" variant="text" color="primary" onClick={(e) => { e.stopPropagation(); navigate(`/recipe/${recipe.RowKey}`); }}>View Recipe</Button>
                                                             </CardContent>
                                                         </Card>
                                                     </Grid>

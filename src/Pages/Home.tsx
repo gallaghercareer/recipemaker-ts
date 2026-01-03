@@ -154,7 +154,7 @@ const Home = () => {
                                                         Added {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Just now"}
                                                     </Typography>
                                                 </Box>
-                                                <Button size="small" color="secondary" variant="outlined">Open</Button>
+                                                <Button size="small" color="secondary" variant="outlined" onClick={() => navigate(`/recipe/${recipe.RowKey}`)}>Open</Button>
                                             </CardContent>
                                         </Card>
                                     )) : (

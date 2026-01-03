@@ -95,8 +95,40 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             setLoading(false);
         }
     };
+
+    const deleteRecipe = async (rowKey: string) => {
+        try {
+            setLoading(true);
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/DeleteRecipe`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ rowKey: rowKey })
+            });
+
+            if (response.ok) {
+                // Update local state by filtering out the deleted recipe
+                setRecipes((prev) => prev.filter((r: any) => r.RowKey !== rowKey));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Error in deleteRecipe:", error);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe }}>
             {children}
         </RecipeContext.Provider>
     );

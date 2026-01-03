@@ -4,9 +4,11 @@ import {
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import { useRecipes } from '../Context/RecipeContext';
+import { useNavigate } from 'react-router-dom';
 
 const ViewRecipes = () => {
     const { recipes } = useRecipes();
+    const navigate = useNavigate();
 
     const parseIngredients = (ingredients: any): string[] => {
         if (!ingredients) return [];
@@ -38,7 +40,7 @@ const ViewRecipes = () => {
                              const ingredientList = parseIngredients(recipe.Ingredients);
                              return (
                             <Grid item xs={12} sm={6} md={4} key={recipe.RowKey}>
-                                <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 4, borderColor: 'secondary.main' } }}>
+                                <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { boxShadow: 4, borderColor: 'secondary.main', cursor: 'pointer' } }} onClick={() => navigate(`/recipe/${recipe.RowKey}`)}>
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography variant="h6" component="div" gutterBottom fontFamily="Playfair Display" fontWeight="600">
                                             {recipe.Title || recipe.title}
@@ -68,7 +70,7 @@ const ViewRecipes = () => {
                                         )}
                                     </CardContent>
                                     <Box sx={{ p: 2, pt: 0 }}>
-                                        <Button size="small" variant="contained" color="secondary" fullWidth>
+                                        <Button size="small" variant="contained" color="secondary" fullWidth onClick={(e) => { e.stopPropagation(); navigate(`/recipe/${recipe.RowKey}`); }}>
                                             View Details
                                         </Button>
                                     </Box>
