@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { useRecipes } from '../Context/RecipeContext';
-import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@mui/material';
+import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, Accordion, AccordionSummary, AccordionDetails, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
-    const { recipes, categories, deleteCategory } = useRecipes();
+    const { recipes, categories, deleteCategory, createCategory } = useRecipes();
     const navigate = useNavigate();
+    const [openCreateDialog, setOpenCreateDialog] = useState(false);
+    const [newCategoryName, setNewCategoryName] = useState('');
 
     // 1. Get names from stored Category entities (The Markers)
     const storedCategoryNames = categories.map((c: any) => {
@@ -56,12 +60,30 @@ const Categories = () => {
         }
     };
 
+    const handleCreateCategory = async () => {
+        if (newCategoryName.trim()) {
+            await createCategory(newCategoryName.trim());
+            setNewCategoryName('');
+            setOpenCreateDialog(false);
+        }
+    };
+
     return (
         <Box sx={{ minHeight: 'calc(100vh - 64px)', py: 4, bgcolor: 'background.default', color: 'text.primary' }}>
             <Container maxWidth="lg">
-                <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <CategoryIcon color="secondary" fontSize="large" /> Categories
-                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <CategoryIcon color="secondary" fontSize="large" /> Categories
+                    </Typography>
+                    <Button 
+                        variant="contained" 
+                        color="secondary" 
+                        startIcon={<AddIcon />} 
+                        onClick={() => setOpenCreateDialog(true)}
+                    >
+                        New Category
+                    </Button>
+                </Box>
                 <Divider sx={{ mb: 4 }} />
 
                 {displayCategories.length > 0 ? (
@@ -122,9 +144,29 @@ const Categories = () => {
                     <Box sx={{ py: 8, textAlign: 'center', color: 'text.secondary', border: '1px dashed', borderColor: 'divider', borderRadius: 2 }}>
                         <CategoryIcon sx={{ fontSize: 60, mb: 2, opacity: 0.5 }} />
                         <Typography variant="h6">No categories found</Typography>
-                        <Typography variant="body2">Start by creating a recipe.</Typography>
+                        <Typography variant="body2">Start by creating a recipe or adding a new category.</Typography>
                     </Box>
                 )}
+
+                <Dialog open={openCreateDialog} onClose={() => setOpenCreateDialog(false)}>
+                    <DialogTitle>Create New Category</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Category Name"
+                            fullWidth
+                            variant="standard"
+                            value={newCategoryName}
+                            onChange={(e) => setNewCategoryName(e.target.value)}
+                            onKeyPress={(e) => e.key === 'Enter' && handleCreateCategory()}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenCreateDialog(false)}>Cancel</Button>
+                        <Button onClick={handleCreateCategory} variant="contained" color="secondary">Create</Button>
+                    </DialogActions>
+                </Dialog>
             </Container>
         </Box>
     );

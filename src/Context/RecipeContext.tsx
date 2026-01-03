@@ -130,8 +130,8 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         // Construct the RowKey. We assume the standard prefix 'category_' used in creation/seeding.
         // Note: The user might have legacy categories or case sensitivity issues.
         // We will try to find the exact entity in our state first to get the correct RowKey.
-        const categoryEntity = categories.find((c: any) => 
-            (c.RowKey === `category_${categoryName}`) || 
+        const categoryEntity = categories.find((c: any) =>
+            (c.RowKey === `category_${categoryName}`) ||
             (c.RowKey && c.RowKey.toLowerCase() === `category_${categoryName.toLowerCase()}`)
         );
 
@@ -202,8 +202,38 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const createCategory = async (categoryName: string) => {
+        try {
+            setLoading(true);
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/CreateRecipeCategory`, {
+                method: 'POST',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ categoryName: categoryName })
+            });
+
+            if (response.ok) {
+                await fetchRecipes(true);
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Error in createCategory:", error);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe, createCategory }}>
             {children}
         </RecipeContext.Provider>
     );
