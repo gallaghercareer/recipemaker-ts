@@ -40,34 +40,32 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                // data is now { recipe: {...}, category: {...} }
-
-                setRecipes((prev) => [data.recipe, ...prev]);
-
-                // Add the category to state if it's not already there
-                setCategories((prev) => {
-                    const exists = prev.some(c => c.RowKey === data.category.RowKey);
-                    return exists ? prev : [...prev, data.category];
-                });
-
+                // We successfully created the recipe.
+                // Force a re-fetch to ensure we have the exact data from the server (including generated RowKey, Timestamp, etc.)
+                // This handles potential case-sensitivity mismatches or incomplete response data.
+                await fetchRecipes(true); 
                 return true;
             }
             return false;
         } catch (error) {
             console.error("Error in addRecipe:", error);
+            // Even on error, try to fetch. The error might be a network timeout on response, but the write could have succeeded.
+            await fetchRecipes(true);
             return false;
         } finally {
             setLoading(false);
         }
     };
 
-    const fetchRecipes = async () => {
-        if (hasFetched.current || accounts.length === 0) return;
+    const fetchRecipes = async (force: boolean = false) => {
+        if ((hasFetched.current && !force) || accounts.length === 0) return;
 
         try {
             setLoading(true);
-            hasFetched.current = true;
+            // Don't set hasFetched.current = true yet if we are forcing, or maybe we do? 
+            // If we force, we definitely want to allow future fetches if we reset the logic, 
+            // but standard logic is "fetch once on mount".
+            if (!force) hasFetched.current = true;
 
             const tokenResponse = await instance.acquireTokenSilent({
                 scopes: [import.meta.env.VITE_SCOPE],
