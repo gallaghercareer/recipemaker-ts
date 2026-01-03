@@ -1,14 +1,17 @@
+import { useState } from 'react';
 import {
-    Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button
+    Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, TextField, InputAdornment
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import SearchIcon from '@mui/icons-material/Search';
 import { useRecipes } from '../Context/RecipeContext';
 import { useNavigate } from 'react-router-dom';
 
 const ViewRecipes = () => {
     const { recipes } = useRecipes();
     const navigate = useNavigate();
+    const [searchQuery, setSearchQuery] = useState('');
 
     const parseIngredients = (ingredients: any): string[] => {
         if (!ingredients) return [];
@@ -26,17 +29,39 @@ const ViewRecipes = () => {
         return [];
     };
 
+    const filteredRecipes = recipes.filter((recipe: any) => {
+        const title = recipe.Title || recipe.title || '';
+        return title.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+
     return (
         <Box sx={{ minHeight: 'calc(100vh - 64px)', py: 4, bgcolor: 'background.default', color: 'text.primary' }}>
             <Container maxWidth="lg">
-                <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    <RestaurantIcon color="secondary" fontSize="large" /> My Recipes
-                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', mb: 2, gap: 2 }}>
+                    <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                        <RestaurantIcon color="secondary" fontSize="large" /> My Recipes
+                    </Typography>
+                    <TextField
+                        placeholder="Search recipes..."
+                        variant="outlined"
+                        size="small"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position="start">
+                                    <SearchIcon color="action" />
+                                </InputAdornment>
+                            ),
+                        }}
+                        sx={{ width: { xs: '100%', md: 300 }, bgcolor: 'background.paper' }}
+                    />
+                </Box>
                 <Divider sx={{ mb: 4 }} />
 
-                {recipes.length > 0 ? (
+                {filteredRecipes.length > 0 ? (
                     <Grid container spacing={3}>
-                        {recipes.map((recipe: any) => {
+                        {filteredRecipes.map((recipe: any) => {
                              const ingredientList = parseIngredients(recipe.Ingredients);
                              return (
                             <Grid item xs={12} sm={6} md={4} key={recipe.RowKey}>

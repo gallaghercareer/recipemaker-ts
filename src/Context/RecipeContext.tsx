@@ -43,7 +43,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
                 // We successfully created the recipe.
                 // Force a re-fetch to ensure we have the exact data from the server (including generated RowKey, Timestamp, etc.)
                 // This handles potential case-sensitivity mismatches or incomplete response data.
-                await fetchRecipes(true); 
+                await fetchRecipes(true);
                 return true;
             }
             return false;
