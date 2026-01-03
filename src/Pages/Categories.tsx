@@ -59,7 +59,7 @@ const Categories = () => {
                                                                 <Typography variant="subtitle1" fontWeight="bold" gutterBottom>
                                                                     {recipe.Title}
                                                                 </Typography>
-                                                                <Button size="small" variant="text" color="primary" onClick={(e) => { e.stopPropagation(); navigate(`/recipe/${recipe.RowKey}`); }}>View Recipe</Button>
+                                                                <Button size="small" variant="text" color="secondary" onClick={(e) => { e.stopPropagation(); navigate(`/recipe/${recipe.RowKey}`); }}>View Recipe</Button>
                                                             </CardContent>
                                                         </Card>
                                                     </Grid>

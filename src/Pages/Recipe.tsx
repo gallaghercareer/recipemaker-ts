@@ -204,7 +204,7 @@ const Recipe = () => {
                         }}
                     >
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                            <LinkIcon color="primary" />
+                            <LinkIcon color="secondary" />
                             <Box>
                                 <Typography variant="subtitle1" fontWeight="bold">
                                     Original Source
@@ -217,6 +217,7 @@ const Recipe = () => {
                         <Button
                             variant="outlined"
                             size="small"
+                            color="secondary"
                             component="span" // Since the card is clickable, button is visual aid or fallback
                         >
                             Open Link

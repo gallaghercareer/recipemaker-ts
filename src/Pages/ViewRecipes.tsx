@@ -85,10 +85,10 @@ const ViewRecipes = () => {
                                                 </Typography>
                                                 <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                                                     {ingredientList.slice(0, 3).map((ing: string, i: number) => (
-                                                        <Chip key={i} label={ing} size="small" variant="outlined" />
+                                                        <Chip key={i} label={ing} size="small" variant="outlined" color="secondary" />
                                                     ))}
                                                     {ingredientList.length > 3 && (
-                                                        <Chip label={`+${ingredientList.length - 3} more`} size="small" variant="outlined" />
+                                                        <Chip label={`+${ingredientList.length - 3} more`} size="small" variant="outlined" color="secondary" />
                                                     )}
                                                 </Box>
                                             </Box>

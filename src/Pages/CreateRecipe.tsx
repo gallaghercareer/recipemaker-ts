@@ -306,7 +306,7 @@ const CreateRecipe = () => {
                         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
                             <Button
                                 variant="contained"
-                                color="primary"
+                                color="secondary"
                                 size="large"
                                 sx={{ px: 6, py: 1.5, borderRadius: 8 }}
                                 onClick={handleSaveRecipe}
