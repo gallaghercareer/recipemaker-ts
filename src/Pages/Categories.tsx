@@ -1,49 +1,59 @@
 import { useRecipes } from '../Context/RecipeContext';
-import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
+import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, Accordion, AccordionSummary, AccordionDetails, IconButton } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useNavigate } from 'react-router-dom';
 
 const Categories = () => {
-    const { recipes, categories } = useRecipes();
+    const { recipes, categories, deleteCategory } = useRecipes();
     const navigate = useNavigate();
 
-    // 1. Get names from stored Category entities
+    // 1. Get names from stored Category entities (The Markers)
     const storedCategoryNames = categories.map((c: any) => {
-        // Prioritize parsing RowKey if it follows the known pattern "category_..."
-        // This avoids issues where the 'Category' property is empty or 'Title' is missing.
         if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
              return c.RowKey.replace(/^(category_|Category_)/i, '');
         }
-
-        // Fallback to properties if RowKey doesn't match the pattern
         if (c.Name) return c.Name;
         if (c.Title) return c.Title;
         if (c.Category) return c.Category;
-        
-        // Final fallback
         return c.RowKey || "Unknown";
+    }).filter((c: any) => c && c !== "Unknown");
+
+    // 2. Identify Valid Categories (Markers)
+    const validCategories = new Set(storedCategoryNames);
+
+    // 3. Determine if there are any "Uncategorized" recipes
+    // A recipe is Uncategorized if it has no category OR its category is not in the valid markers list
+    const hasUncategorized = recipes.some((r: any) => {
+        const cat = r.Category;
+        return !cat || !validCategories.has(cat);
     });
 
-    // 2. Get names from Recipes (legacy or ad-hoc categories)
-    const recipeCategoryNames = recipes.map((r: any) => r.Category || "Uncategorized");
-
-    // 3. Union and Deduplicate
-    const derivedCategories = Array.from(new Set([...storedCategoryNames, ...recipeCategoryNames]))
-        .filter((c: any) => c && c !== "Unknown") // Filter out invalid
-        .sort((a: any, b: any) => {
-            if (a === "Uncategorized") return 1;
-            if (b === "Uncategorized") return -1;
-            return a.localeCompare(b);
-        });
+    // 4. Final Display List
+    const displayCategories = [...Array.from(validCategories).sort()];
+    if (hasUncategorized) {
+        displayCategories.push("Uncategorized");
+    }
 
     // Group Recipes by Category
     const getRecipesByCategory = (categoryName: string) => {
-        return recipes.filter((r: any) => {
-            const rCat = r.Category || "Uncategorized";
-            return rCat === categoryName;
-        });
+        if (categoryName === "Uncategorized") {
+            return recipes.filter((r: any) => {
+                const cat = r.Category;
+                // Include if empty OR not in valid markers
+                return !cat || !validCategories.has(cat);
+            });
+        }
+        return recipes.filter((r: any) => r.Category === categoryName);
+    };
+
+    const handleDeleteCategory = async (e: React.MouseEvent, categoryName: string) => {
+        e.stopPropagation(); // Prevent accordion expansion
+        if (window.confirm(`Are you sure you want to delete '${categoryName}'? All recipes in this category will be moved to 'Uncategorized'.`)) {
+            await deleteCategory(categoryName);
+        }
     };
 
     return (
@@ -54,9 +64,9 @@ const Categories = () => {
                 </Typography>
                 <Divider sx={{ mb: 4 }} />
 
-                {derivedCategories.length > 0 ? (
+                {displayCategories.length > 0 ? (
                     <Box>
-                        {derivedCategories.map((categoryName: any, index: number) => {
+                        {displayCategories.map((categoryName: any, index: number) => {
                             const categoryRecipes = getRecipesByCategory(categoryName);
                             return (
                                 <Accordion key={index} sx={{ mb: 2, bgcolor: 'background.paper' }}>
@@ -65,10 +75,22 @@ const Categories = () => {
                                         aria-controls={`panel${index}-content`}
                                         id={`panel${index}-header`}
                                     >
-                                        <Typography variant="h6" fontWeight="600" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            {categoryName}
-                                            <Chip label={categoryRecipes.length} size="small" color="secondary" variant="outlined" sx={{ ml: 2 }} />
-                                        </Typography>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', mr: 2 }}>
+                                            <Typography variant="h6" fontWeight="600" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                {categoryName}
+                                                <Chip label={categoryRecipes.length} size="small" color="secondary" variant="outlined" sx={{ ml: 2 }} />
+                                            </Typography>
+                                            {categoryName !== "Uncategorized" && (
+                                                <IconButton 
+                                                    size="small" 
+                                                    color="error" 
+                                                    onClick={(e) => handleDeleteCategory(e, categoryName)}
+                                                    aria-label="delete category"
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            )}
+                                        </Box>
                                     </AccordionSummary>
                                     <AccordionDetails>
                                         {categoryRecipes.length > 0 ? (

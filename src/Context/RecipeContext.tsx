@@ -126,6 +126,52 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         }
     };
 
+    const deleteCategory = async (categoryName: string) => {
+        // Construct the RowKey. We assume the standard prefix 'category_' used in creation/seeding.
+        // Note: The user might have legacy categories or case sensitivity issues.
+        // We will try to find the exact entity in our state first to get the correct RowKey.
+        const categoryEntity = categories.find((c: any) => 
+            (c.RowKey === `category_${categoryName}`) || 
+            (c.RowKey && c.RowKey.toLowerCase() === `category_${categoryName.toLowerCase()}`)
+        );
+
+        if (!categoryEntity || !categoryEntity.RowKey) {
+            console.error("Category entity not found for deletion:", categoryName);
+            return false;
+        }
+
+        const rowKey = categoryEntity.RowKey;
+
+        try {
+            setLoading(true);
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            // We assume /DeleteRecipe handles generic entity deletion by RowKey
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/DeleteRecipe`, {
+                method: 'DELETE',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ rowKey: rowKey })
+            });
+
+            if (response.ok) {
+                setCategories((prev) => prev.filter((c: any) => c.RowKey !== rowKey));
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error("Error in deleteCategory:", error);
+            return false;
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const updateRecipe = async (updatedRecipe: any) => {
         try {
             setLoading(true);
@@ -157,7 +203,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, updateRecipe }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe }}>
             {children}
         </RecipeContext.Provider>
     );
