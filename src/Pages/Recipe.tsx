@@ -23,7 +23,7 @@ const Recipe = () => {
     const { recipes, fetchRecipes, loading, deleteRecipe, updateRecipe } = useRecipes();
     const [recipe, setRecipe] = useState<any>(null);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-    
+
     // Edit Mode State
     const [isEditing, setIsEditing] = useState(false);
     const [editData, setEditData] = useState({
@@ -190,7 +190,7 @@ const Recipe = () => {
                             Back
                         </Button>
                     )}
-                    
+
                     <Box sx={{ display: 'flex', gap: 1 }}>
                         {isEditing ? (
                             <Button
@@ -385,138 +385,140 @@ const Recipe = () => {
                 ) : (
                     // View Mode Layout
                     <>
-                    <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
-                        {/* Header */}
-                        <Box sx={{ mb: 4, textAlign: 'center' }}>
-                            {/* ... (Existing View Header) ... */}
-                            {/* Wait, the replace string needs to match exactly or I replace the whole return */}
-                            {/* The logic below is simpler: I am replacing everything from `const Recipe = ...` down to the end of the return statement for `Recipe` component. */}
-                            {/* BUT replace tool requires context. I will provide a large chunk of the file or reconstruct the view mode inside the replace string. */}
-                            {/* Since I am replacing the entire component logic and return, I should be careful. */}
-                            {/* Actually, I am providing a HUGE new string. I need to make sure I match the old string correctly. */}
-                            {/* The safest way is to replace the main `Recipe` component function body. */}
-                            <Typography variant="overline" color="secondary" fontWeight="bold" letterSpacing={2}>
-                                {recipe.Category || "Uncategorized"}
-                            </Typography>
-                            <Typography variant="h3" fontFamily="Playfair Display" fontWeight="700" gutterBottom>
-                                {recipe.Title}
-                            </Typography>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, color: 'text.secondary', mt: 2 }}>
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                    <AccessTimeIcon fontSize="small" />
-                                    <Typography variant="body2">
-                                        {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Recently Added"}
-                                    </Typography>
-                                </Box>
-                            </Box>
-                        </Box>
-
-                        <Divider sx={{ mb: 4 }} />
-
-                        <Grid container spacing={4}>
-                            {/* Ingredients Column */}
-                            <Grid item xs={12} md={4}>
-                                <Box sx={{ bgcolor: 'action.hover', p: 3, borderRadius: 2, height: '100%' }}>
-                                    <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <LocalDiningIcon color="secondary" /> Ingredients
-                                    </Typography>
-                                    <List>
-                                        {ingredients.map((item, index) => (
-                                            <ListItem key={index} disablePadding sx={{ py: 1 }}>
-                                                <ListItemIcon sx={{ minWidth: 32 }}>
-                                                    <CheckCircleOutlineIcon fontSize="small" color="secondary" />
-                                                </ListItemIcon>
-                                                <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2' }} />
-                                            </ListItem>
-                                        ))}
-                                        {ingredients.length === 0 && (
-                                            <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                                                No ingredients listed.
-                                            </Typography>
-                                        )}
-                                    </List>
-                                </Box>
-                            </Grid>
-
-                            {/* Instructions Column */}
-                            <Grid item xs={12} md={8}>
-                                <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <RestaurantIcon color="secondary" /> Instructions
+                        <Paper elevation={0} sx={{ p: { xs: 3, md: 5 }, borderRadius: 2, border: '1px solid', borderColor: 'divider' }}>
+                            {/* Header */}
+                            <Box sx={{ mb: 4, textAlign: 'center' }}>
+                                {/* ... (Existing View Header) ... */}
+                                {/* Wait, the replace string needs to match exactly or I replace the whole return */}
+                                {/* The logic below is simpler: I am replacing everything from `const Recipe = ...` down to the end of the return statement for `Recipe` component. */}
+                                {/* BUT replace tool requires context. I will provide a large chunk of the file or reconstruct the view mode inside the replace string. */}
+                                {/* Since I am replacing the entire component logic and return, I should be careful. */}
+                                {/* Actually, I am providing a HUGE new string. I need to make sure I match the old string correctly. */}
+                                {/* The safest way is to replace the main `Recipe` component function body. */}
+                                <Typography variant="overline" color="secondary" fontWeight="bold" letterSpacing={2}>
+                                    {recipe.Category || "Uncategorized"}
                                 </Typography>
-                                <List sx={{ counterReset: 'step-counter' }}>
-                                    {steps.map((step, index) => (
-                                        <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
-                                            <Box
-                                                component="span"
-                                                sx={{
-                                                    mr: 2,
-                                                    width: 28,
-                                                    height: 28,
-                                                    borderRadius: '50%',
-                                                    bgcolor: 'secondary.main',
-                                                    color: 'secondary.contrastText',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    fontSize: '0.875rem',
-                                                    fontWeight: 'bold',
-                                                    flexShrink: 0,
-                                                    mt: 0.5
-                                                }}
-                                            >
-                                                {index + 1}
-                                            </Box>
-                                            <ListItemText primary={step} />
-                                        </ListItem>
-                                    ))}
-                                    {steps.length === 0 && (
-                                        <Typography variant="body2" color="text.secondary" fontStyle="italic">
-                                            No instructions listed.
+                                <Typography variant="h3" fontFamily="Playfair Display" fontWeight="700" gutterBottom>
+                                    {recipe.Title}
+                                </Typography>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, color: 'text.secondary', mt: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                        <AccessTimeIcon fontSize="small" />
+                                        <Typography variant="body2">
+                                            {recipe.Timestamp ? new Date(recipe.Timestamp).toLocaleDateString() : "Recently Added"}
                                         </Typography>
-                                    )}
-                                </List>
-                            </Grid>
-                        </Grid>
-                    </Paper>
-
-                    {recipe.Url && (
-                        <Card
-                            variant="outlined"
-                            onClick={() => window.open(recipe.Url, "_blank")}
-                            sx={{
-                                mt: 3,
-                                p: 2,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                cursor: 'pointer',
-                                '&:hover': {
-                                    bgcolor: 'action.hover',
-                                    borderColor: 'primary.main'
-                                }
-                            }}
-                        >
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                <LinkIcon color="secondary" />
-                                <Box>
-                                    <Typography variant="subtitle1" fontWeight="bold">
-                                        Original Source
-                                    </Typography>
-                                    <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
-                                        {recipe.Url}
-                                    </Typography>
+                                    </Box>
                                 </Box>
                             </Box>
-                            <Button
+
+                            <Divider sx={{ mb: 4 }} />
+
+                            <Grid container spacing={4}>
+                                {/* Ingredients Column */}
+                                <Grid item xs={12} md={4}>
+                                    <Box sx={{ bgcolor: 'action.hover', p: 3, borderRadius: 2, height: '100%' }}>
+                                        <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <LocalDiningIcon color="secondary" /> Ingredients
+                                        </Typography>
+                                        <List>
+                                            {ingredients.map((item, index) => (
+                                                <ListItem key={index} disablePadding sx={{ py: 1 }}>
+                                                    <ListItemIcon sx={{ minWidth: 32 }}>
+                                                        <CheckCircleOutlineIcon fontSize="small" color="secondary" />
+                                                    </ListItemIcon>
+                                                    <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2' }} />
+                                                </ListItem>
+                                            ))}
+                                            {ingredients.length === 0 && (
+                                                <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                                                    No ingredients listed.
+                                                </Typography>
+                                            )}
+                                        </List>
+                                    </Box>
+                                </Grid>
+
+                                {/* Instructions Column */}
+                                <Grid item xs={12} md={8}>
+                                    <Box sx={{ p: 3 }}>
+                                        <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            <RestaurantIcon color="secondary" /> Instructions
+                                        </Typography>
+                                        <List sx={{ counterReset: 'step-counter' }}>
+                                            {steps.map((step, index) => (
+                                                <ListItem key={index} alignItems="flex-start" sx={{ mb: 2 }}>
+                                                    <Box
+                                                        component="span"
+                                                        sx={{
+                                                            mr: 2,
+                                                            width: 28,
+                                                            height: 28,
+                                                            borderRadius: '50%',
+                                                            bgcolor: 'secondary.main',
+                                                            color: 'secondary.contrastText',
+                                                            display: 'flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            fontSize: '0.875rem',
+                                                            fontWeight: 'bold',
+                                                            flexShrink: 0,
+                                                            mt: 0.5
+                                                        }}
+                                                    >
+                                                        {index + 1}
+                                                    </Box>
+                                                    <ListItemText primary={step} />
+                                                </ListItem>
+                                            ))}
+                                            {steps.length === 0 && (
+                                                <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                                                    No instructions listed.
+                                                </Typography>
+                                            )}
+                                        </List>
+                                    </Box>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+
+                        {recipe.Url && (
+                            <Card
                                 variant="outlined"
-                                size="small"
-                                color="secondary"
-                                component="span" 
+                                onClick={() => window.open(recipe.Url, "_blank")}
+                                sx={{
+                                    mt: 3,
+                                    p: 2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between',
+                                    cursor: 'pointer',
+                                    '&:hover': {
+                                        bgcolor: 'action.hover',
+                                        borderColor: 'primary.main'
+                                    }
+                                }}
                             >
-                                Open Link
-                            </Button>
-                        </Card>
-                    )}
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                                    <LinkIcon color="secondary" />
+                                    <Box>
+                                        <Typography variant="subtitle1" fontWeight="bold">
+                                            Original Source
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-all' }}>
+                                            {recipe.Url}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                <Button
+                                    variant="outlined"
+                                    size="small"
+                                    color="secondary"
+                                    component="span"
+                                >
+                                    Open Link
+                                </Button>
+                            </Card>
+                        )}
                     </>
                 )}
                 {/* Delete Confirmation Dialog */}
