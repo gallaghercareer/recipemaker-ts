@@ -20,7 +20,7 @@ import AddIcon from '@mui/icons-material/Add';
 const Recipe = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { recipes, categories, fetchRecipes, loading, deleteRecipe, updateRecipe } = useRecipes();
+    const { recipes, categories, fetchRecipes, loading, deleteRecipe, updateRecipe, createCategory } = useRecipes();
     const [recipe, setRecipe] = useState<any>(null);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -143,10 +143,28 @@ const Recipe = () => {
     const handleSaveClick = async () => {
         if (!recipe) return;
 
+        let finalCategory = editData.Category.trim();
+
+        if (finalCategory) {
+            // Case-insensitive check against existing categories
+            const existingMatch = categoryOptions.find(
+                (c: string) => c.toLowerCase() === finalCategory.toLowerCase()
+            );
+
+            if (existingMatch) {
+                // Use the existing category's casing to ensure it matches the marker
+                finalCategory = existingMatch;
+            } else if (finalCategory.toLowerCase() !== "uncategorized") {
+                // Create new category marker if it doesn't exist and isn't "Uncategorized"
+                // This ensures the category appears in the sidebar/list
+                await createCategory(finalCategory);
+            }
+        }
+
         const updatedRecipe = {
             ...recipe, // Keep original fields like RowKey, PartitionKey
             Title: editData.Title,
-            Category: editData.Category,
+            Category: finalCategory,
             Url: editData.Url,
             Ingredients: JSON.stringify(editingIngredients),
             Steps: JSON.stringify(editData.Steps.split('\n').filter(s => s.trim().length > 0))

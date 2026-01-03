@@ -25,7 +25,7 @@ const CreateRecipe = () => {
     const [steps, setSteps] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
-    const { addToGroceryList, addRecipe, categories } = useRecipes();
+    const { addToGroceryList, addRecipe, categories, createCategory } = useRecipes();
     const navigate = useNavigate();
 
     const categoryOptions = useMemo(() => {
@@ -43,15 +43,29 @@ const CreateRecipe = () => {
     }, [categories]);
 
 
-    const handleSaveRecipe = () => {
+    const handleSaveRecipe = async () => {
         if (!recipeName.trim()) return;
+
+        let finalCategory = category.trim();
+
+        if (finalCategory) {
+            const existingMatch = categoryOptions.find(
+                (c: string) => c.toLowerCase() === finalCategory.toLowerCase()
+            );
+
+            if (existingMatch) {
+                finalCategory = existingMatch;
+            } else if (finalCategory.toLowerCase() !== "uncategorized") {
+                await createCategory(finalCategory);
+            }
+        }
 
         const newRecipe = {
             Title: recipeName,
             Url: recipeUrl,
             Ingredients: JSON.stringify(ingredients), // Store as JSON string
             Steps: steps,
-            Category: category, // Placeholder until category is implemented
+            Category: finalCategory, 
         };
 
         addRecipe(newRecipe);
