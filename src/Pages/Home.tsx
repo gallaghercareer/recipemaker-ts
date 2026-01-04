@@ -27,7 +27,7 @@ const Home = () => {
         }
     }, [accounts]);
 
-    const userName = accounts[0]?.name || "Chef";
+    const userName = accounts[0]?.name || accounts[0]?.username || "Chef";
 
     const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
         <Card
