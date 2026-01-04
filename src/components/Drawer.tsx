@@ -18,6 +18,10 @@ import HomeIcon from '@mui/icons-material/Home';
 import { useNavigate } from 'react-router-dom';
 import { useIsAuthenticated } from "@azure/msal-react";
 
+/*Notes:
+
+*/
+
 export default function TemporaryDrawer() {
     const [open, setOpen] = React.useState(false);
     const navigate = useNavigate();
