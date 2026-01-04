@@ -1,5 +1,4 @@
 import { type PaletteMode } from '@mui/material';
-import { grey, blue } from '@mui/material/colors';
 
 export const getDesignTokens = (mode: PaletteMode) => ({
     typography: {

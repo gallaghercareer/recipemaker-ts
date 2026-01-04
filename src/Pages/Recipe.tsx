@@ -289,7 +289,7 @@ const Recipe = () => {
                                         onChange={(_event, newValue) => {
                                             setEditData({ ...editData, Category: (newValue as string) || '' });
                                         }}
-                                        onInputChange={(event, newInputValue) => {
+                                        onInputChange={(_event, newInputValue) => {
                                             setEditData({ ...editData, Category: newInputValue });
                                         }}
                                         renderInput={(params) => (

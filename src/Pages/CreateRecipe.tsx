@@ -27,7 +27,7 @@ const CreateRecipe = () => {
     const { addToGroceryList, addRecipe, categories, createCategory } = useRecipes();
     const navigate = useNavigate();
 
-    const categoryOptions = useMemo(() => {
+    const categoryOptions = useMemo<string[]>(() => {
         const names = categories.map((c: any) => {
             if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
                 return c.RowKey.replace(/^(category_|Category_)/i, '');
@@ -38,7 +38,7 @@ const CreateRecipe = () => {
             return c.RowKey || "Unknown";
         }).filter((c: any) => c && c !== "Unknown");
 
-        return Array.from(new Set(names)).sort();
+        return Array.from(new Set(names)).sort() as string[];
     }, [categories]);
 
 
@@ -49,7 +49,7 @@ const CreateRecipe = () => {
 
         if (finalCategory) {
             const existingMatch = categoryOptions.find(
-                (c: string) => c.toLowerCase() === finalCategory.toLowerCase()
+                (c) => c.toLowerCase() === finalCategory.toLowerCase()
             );
 
             if (existingMatch) {
@@ -151,10 +151,10 @@ const CreateRecipe = () => {
                                     freeSolo
                                     options={categoryOptions}
                                     value={category}
-                                    onChange={(event: any, newValue: string | null) => {
-                                        setCategory(newValue || '');
+                                    onChange={(_event, newValue: any) => {
+                                        setCategory((newValue as string) || '');
                                     }}
-                                    onInputChange={(event, newInputValue) => {
+                                    onInputChange={(_event, newInputValue) => {
                                         setCategory(newInputValue);
                                     }}
                                     renderInput={(params) => (

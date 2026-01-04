@@ -29,7 +29,7 @@ const Home = () => {
 
     const userName = accounts[0]?.name || "Chef";
 
-    const ActionCard = ({ title, icon, onClick, color = "primary.main" }: { title: string, icon: React.ReactNode, onClick?: () => void, color?: string }) => (
+    const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
         <Card
             variant="outlined"
             sx={{
