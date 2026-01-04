@@ -69,12 +69,10 @@ const Home = () => {
             <Container maxWidth="lg">
                 {/* Welcome Header */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 6, gap: 2 }}>
-                    <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56, color: 'primary.contrastText' }}>
-                        {userName.charAt(0)}
-                    </Avatar>
+
                     <Box>
                         <Typography variant="h4" fontWeight="700" fontFamily="Playfair Display">
-                            Welcome back, {userName}!
+                            Welcome back, Chef!
                         </Typography>
                         <Typography variant="body1" color="text.secondary">
                             What are we cooking today?
