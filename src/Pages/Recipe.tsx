@@ -549,7 +549,10 @@ const Recipe = () => {
                         {recipe.Url && (
                             <Card
                                 variant="outlined"
-                                onClick={() => window.open(recipe.Url, "_blank")}
+                                onClick={() => {
+                                    const url = recipe.Url.match(/^https?:\/\//i) ? recipe.Url : `https://${recipe.Url}`;
+                                    window.open(url, "_blank");
+                                }}
                                 sx={{
                                     mt: 3,
                                     p: 2,
