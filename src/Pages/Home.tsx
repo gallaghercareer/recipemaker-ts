@@ -31,7 +31,7 @@ const Home = () => {
     const name = account?.name;
     const idTokenClaims = account?.idTokenClaims as any;
     const email = idTokenClaims?.email || idTokenClaims?.emails?.[0] || account?.username;
-    
+
     const userName = (name && name !== "Unknown") ? name : (email || "Chef");
 
     const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
@@ -138,7 +138,7 @@ const Home = () => {
                                 <Typography variant="h6" fontFamily="Playfair Display" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     <RestaurantIcon color="secondary" /> Recent Recipes
                                 </Typography>
-                                <Button size="small" color="secondary">View All</Button>
+                                {/*} <Button size="small" color="secondary">View All</Button>*/}
                             </Box>
                             <Divider sx={{ mb: 2 }} />
 
