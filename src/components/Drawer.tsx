@@ -34,30 +34,17 @@ export default function TemporaryDrawer() {
             { text: 'Home', icon: <HomeIcon />, path: '/' }
         ];
     } else {
-    const menuItems = [
-        { text: 'Home', icon: <HomeIcon />, path: isAuthenticated ? '/Home' : '/' },
-        { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
-        { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
-        { text: 'Categories', icon: <CategoryIcon />, path: '/categories' },
-        { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
-    ];
+        menuItems = [
+            { text: 'Home', icon: <HomeIcon />, path: '/Home' },
+            { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
+            { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
+            { text: 'Categories', icon: <CategoryIcon />, path: '/categories' },
+            { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
+        ];
     }
 
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
-            <List>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton onClick={() => navigate(item.path)}>
-                            <ListItemIcon>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-            </List>
-            <Divider />
             <List>
                 {['Back to Portfolio', 'App Diagram', 'Contact Me'].map((text, index) => (
                     <ListItem key={text} disablePadding>
@@ -66,6 +53,19 @@ export default function TemporaryDrawer() {
                                 {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                             </ListItemIcon>
                             <ListItemText primary={text} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
+            </List>
+            <Divider />
+            <List>
+                {menuItems.map((item) => (
+                    <ListItem key={item.text} disablePadding>
+                        <ListItemButton onClick={() => navigate(item.path)}>
+                            <ListItemIcon>
+                                {item.icon}
+                            </ListItemIcon>
+                            <ListItemText primary={item.text} />
                         </ListItemButton>
                     </ListItem>
                 ))}
