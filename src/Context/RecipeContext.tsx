@@ -87,17 +87,30 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             });
 
             if (response.ok) {
-                // We successfully created the recipe.
-                // Force a re-fetch to ensure we have the exact data from the server (including generated RowKey, Timestamp, etc.)
-                // This handles potential case-sensitivity mismatches or incomplete response data.
-                await fetchRecipes(true);
+                const createdRecipe = await response.json();
+
+                // Validate that we actually got a RowKey back. 
+                // If the Azure Function creates the ID but doesn't return it in the body, we can't use optimistic updates for navigation.
+                const rowKey = createdRecipe.RowKey || createdRecipe.rowKey;
+
+                if (rowKey) {
+                    const safeRecipe = {
+                        ...createdRecipe,
+                        RowKey: rowKey,
+                        // Ensure we have a timestamp for the "Recent Recipes" list logic
+                        Timestamp: createdRecipe.Timestamp || new Date().toISOString()
+                    };
+                    setRecipes((prev: any[]) => [safeRecipe, ...prev]);
+                } else {
+                    console.warn("CreateRecipe response missing RowKey. Falling back to full fetch.");
+                    await fetchRecipes(true);
+                }
+                
                 return true;
             }
             return false;
         } catch (error) {
             console.error("Error in addRecipe:", error);
-            // Even on error, try to fetch. The error might be a network timeout on response, but the write could have succeeded.
-            await fetchRecipes(true);
             return false;
         } finally {
             setLoading(false);
@@ -109,11 +122,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
 
         try {
             setLoading(true);
-            // Don't set hasFetched.current = true yet if we are forcing, or maybe we do? 
-            // If we force, we definitely want to allow future fetches if we reset the logic, 
-            // but standard logic is "fetch once on mount".
-            if (!force) hasFetched.current = true;
-
+            
             const tokenResponse = await instance.acquireTokenSilent({
                 scopes: [import.meta.env.VITE_SCOPE],
                 account: accounts[0]
@@ -124,6 +133,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             });
 
             if (response.ok) {
+                if (!force) hasFetched.current = true;
                 const allItems: any[] = await response.json();
 
                 // Handle Grocery List
