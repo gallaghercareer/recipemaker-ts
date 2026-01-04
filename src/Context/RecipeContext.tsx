@@ -12,14 +12,57 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const [groceryList, setGroceryList] = useState<string[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
 
-    const addToGroceryList = (ingredient: string) => {
-        if (!groceryList.includes(ingredient)) {
-            setGroceryList([...groceryList, ingredient]);
+    const addIngredientsToGroceryList = async (ingredients: string[]) => {
+        const newIngredients = ingredients.filter(i => !groceryList.includes(i));
+        if (newIngredients.length > 0) {
+            const newList = [...groceryList, ...newIngredients];
+            setGroceryList(newList);
+            await updateGroceryListApi(newList);
         }
     };
 
-    const removeFromGroceryList = (ingredient: string) => {
-        setGroceryList(groceryList.filter(item => item !== ingredient));
+    const addToGroceryList = async (ingredient: string) => {
+        if (!groceryList.includes(ingredient)) {
+            const newList = [...groceryList, ingredient];
+            // Optimistic update
+            setGroceryList(newList);
+            await updateGroceryListApi(newList);
+        }
+    };
+
+    const removeFromGroceryList = async (ingredient: string) => {
+        const newList = groceryList.filter(item => item !== ingredient);
+        setGroceryList(newList);
+        await updateGroceryListApi(newList);
+    };
+
+    const updateGroceryListApi = async (newList: string[]) => {
+        const payload = { Items: JSON.stringify(newList) };
+        console.log("Updating grocery list with payload:", payload);
+        try {
+            const tokenResponse = await instance.acquireTokenSilent({
+                scopes: [import.meta.env.VITE_SCOPE],
+                account: accounts[0]
+            });
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/UpdateGroceries`, {
+                method: 'PUT',
+                headers: {
+                    "Authorization": `Bearer ${tokenResponse.accessToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                console.error("Failed to update grocery list");
+                // Revert state if failed
+                await fetchRecipes(true);
+            }
+        } catch (error) {
+            console.error("Error updating grocery list:", error);
+            await fetchRecipes(true);
+        }
     };
 
     const addRecipe = async (newRecipe: any) => {
@@ -79,10 +122,28 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
             if (response.ok) {
                 const allItems: any[] = await response.json();
 
+                // Handle Grocery List
+                const groceryItem = allItems.find(item => item.RowKey === 'GROCERY_LIST');
+                if (groceryItem && groceryItem.Ingredients) {
+                    try {
+                        const parsed = JSON.parse(groceryItem.Ingredients);
+                        if (Array.isArray(parsed)) {
+                            setGroceryList(parsed);
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse grocery list ingredients:", e);
+                    }
+                }
+
                 // Separate the "Mixed Bag" from Azure Table Storage
                 const onlyRecipes = allItems.filter(item => item.RowKey && item.RowKey.startsWith('recipe_'));
                 // Assume anything that isn't a recipe is a category (or at least metadata we want to classify as such for now)
-                const onlyCategories = allItems.filter(item => item.RowKey && !item.RowKey.startsWith('recipe_'));
+                // Exclude GROCERY_LIST
+                const onlyCategories = allItems.filter(item =>
+                    item.RowKey &&
+                    !item.RowKey.startsWith('recipe_') &&
+                    item.RowKey !== 'GROCERY_LIST'
+                );
 
                 setRecipes(onlyRecipes);
                 setCategories(onlyCategories);
@@ -233,7 +294,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe, createCategory }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, addIngredientsToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe, createCategory }}>
             {children}
         </RecipeContext.Provider>
     );

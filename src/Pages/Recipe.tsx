@@ -16,25 +16,27 @@ import EditIcon from '@mui/icons-material/Edit';
 import SaveIcon from '@mui/icons-material/Save';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 const Recipe = () => {
+    // Force refresh
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { recipes, categories, fetchRecipes, loading, deleteRecipe, updateRecipe, createCategory } = useRecipes();
+    const { recipes, categories, fetchRecipes, loading, deleteRecipe, updateRecipe, createCategory, groceryList, addToGroceryList, removeFromGroceryList, addIngredientsToGroceryList } = useRecipes();
     const [recipe, setRecipe] = useState<any>(null);
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
     const categoryOptions = useMemo(() => {
         const names = categories.map((c: any) => {
             if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
-                 return c.RowKey.replace(/^(category_|Category_)/i, '');
+                return c.RowKey.replace(/^(category_|Category_)/i, '');
             }
             if (c.Name) return c.Name;
             if (c.Title) return c.Title;
             if (c.Category) return c.Category;
             return c.RowKey || "Unknown";
         }).filter((c: any) => c && c !== "Unknown");
-        
+
         return Array.from(new Set(names)).sort();
     }, [categories]);
 
@@ -461,18 +463,39 @@ const Recipe = () => {
                                 {/* Ingredients Column */}
                                 <Grid item xs={12} md={4}>
                                     <Box sx={{ bgcolor: 'action.hover', p: 3, borderRadius: 2, height: '100%' }}>
-                                        <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                            <LocalDiningIcon color="secondary" /> Ingredients
-                                        </Typography>
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                                            <Typography variant="h5" fontFamily="Playfair Display" fontWeight="600" sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                                <LocalDiningIcon color="secondary" /> Ingredients
+                                            </Typography>
+                                            <Button
+                                                size="small"
+                                                startIcon={<ShoppingBasketIcon />}
+                                                onClick={() => addIngredientsToGroceryList(ingredients)}
+                                                sx={{ textTransform: 'none' }}
+                                            >
+                                                Add All
+                                            </Button>
+                                        </Box>
                                         <List>
-                                            {ingredients.map((item, index) => (
-                                                <ListItem key={index} disablePadding sx={{ py: 1 }}>
-                                                    <ListItemIcon sx={{ minWidth: 32 }}>
-                                                        <CheckCircleOutlineIcon fontSize="small" color="secondary" />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2' }} />
-                                                </ListItem>
-                                            ))}
+                                            {ingredients.map((item, index) => {
+                                                const isInGroceryList = groceryList && groceryList.includes(item);
+                                                return (
+                                                    <ListItem key={index} disablePadding sx={{ py: 1 }}>
+                                                        <ListItemIcon sx={{ minWidth: 32 }}>
+                                                            <CheckCircleOutlineIcon fontSize="small" color="secondary" />
+                                                        </ListItemIcon>
+                                                        <ListItemText primary={item} primaryTypographyProps={{ variant: 'body2' }} />
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => isInGroceryList ? removeFromGroceryList(item) : addToGroceryList(item)}
+                                                            color={isInGroceryList ? "success" : "default"}
+                                                            title={isInGroceryList ? "Remove from groceries" : "Add to groceries"}
+                                                        >
+                                                            <ShoppingBasketIcon fontSize="small" />
+                                                        </IconButton>
+                                                    </ListItem>
+                                                );
+                                            })}
                                             {ingredients.length === 0 && (
                                                 <Typography variant="body2" color="text.secondary" fontStyle="italic">
                                                     No ingredients listed.
