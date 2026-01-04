@@ -3,7 +3,6 @@ import { useRecipes } from '../Context/RecipeContext';
 import { Box, Container, Typography, Grid, Card, CardContent, Divider, Chip, Button, Accordion, AccordionSummary, AccordionDetails, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CategoryIcon from '@mui/icons-material/Category';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +16,7 @@ const Categories = () => {
     // 1. Get names from stored Category entities (The Markers)
     const storedCategoryNames = categories.map((c: any) => {
         if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
-             return c.RowKey.replace(/^(category_|Category_)/i, '');
+            return c.RowKey.replace(/^(category_|Category_)/i, '');
         }
         if (c.Name) return c.Name;
         if (c.Title) return c.Title;
@@ -75,10 +74,10 @@ const Categories = () => {
                     <Typography variant="h4" fontFamily="Playfair Display" fontWeight="700" sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <CategoryIcon color="secondary" fontSize="large" /> Categories
                     </Typography>
-                    <Button 
-                        variant="contained" 
-                        color="secondary" 
-                        startIcon={<AddIcon />} 
+                    <Button
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<AddIcon />}
                         onClick={() => setOpenCreateDialog(true)}
                     >
                         New Category
@@ -103,9 +102,9 @@ const Categories = () => {
                                                 <Chip label={categoryRecipes.length} size="small" color="secondary" variant="outlined" sx={{ ml: 2 }} />
                                             </Typography>
                                             {categoryName !== "Uncategorized" && (
-                                                <IconButton 
-                                                    size="small" 
-                                                    color="error" 
+                                                <IconButton
+                                                    size="small"
+                                                    color="error"
                                                     onClick={(e) => handleDeleteCategory(e, categoryName)}
                                                     aria-label="delete category"
                                                 >

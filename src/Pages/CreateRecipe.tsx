@@ -1,12 +1,11 @@
 import { useState, useMemo } from 'react';
 import {
     Box, Container, Typography, TextField, Button, Grid, Paper,
-    List, ListItem, ListItemText, ListItemIcon, IconButton, Divider, Chip, Autocomplete
+    List, ListItem, ListItemText, IconButton, Divider, Autocomplete
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-import SaveIcon from '@mui/icons-material/Save';
 import EditIcon from '@mui/icons-material/Edit';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
@@ -31,14 +30,14 @@ const CreateRecipe = () => {
     const categoryOptions = useMemo(() => {
         const names = categories.map((c: any) => {
             if (c.RowKey && /^(category_|Category_)/i.test(c.RowKey)) {
-                 return c.RowKey.replace(/^(category_|Category_)/i, '');
+                return c.RowKey.replace(/^(category_|Category_)/i, '');
             }
             if (c.Name) return c.Name;
             if (c.Title) return c.Title;
             if (c.Category) return c.Category;
             return c.RowKey || "Unknown";
         }).filter((c: any) => c && c !== "Unknown");
-        
+
         return Array.from(new Set(names)).sort();
     }, [categories]);
 
@@ -65,7 +64,7 @@ const CreateRecipe = () => {
             Url: recipeUrl,
             Ingredients: JSON.stringify(ingredients), // Store as JSON string
             Steps: steps,
-            Category: finalCategory, 
+            Category: finalCategory,
         };
 
         await addRecipe(newRecipe);

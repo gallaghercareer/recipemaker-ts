@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useRecipes } from '../Context/RecipeContext';
 import {
-    Box, Container, Typography, Chip, Divider, Paper, List, ListItem, ListItemText, ListItemIcon, Button, Grid, IconButton,
+    Box, Container, Typography, Divider, Paper, List, ListItem, ListItemText, ListItemIcon, Button, Grid, IconButton,
     Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Card, TextField, Autocomplete
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -148,17 +148,15 @@ const Recipe = () => {
         let finalCategory = editData.Category.trim();
 
         if (finalCategory) {
-            // Case-insensitive check against existing categories
-            const existingMatch = categoryOptions.find(
+            // 1. Explicitly type 'c' as string in the find method
+            const existingMatch = (categoryOptions as string[]).find(
                 (c: string) => c.toLowerCase() === finalCategory.toLowerCase()
             );
 
             if (existingMatch) {
-                // Use the existing category's casing to ensure it matches the marker
+                // 2. existingMatch is now known to be a string here
                 finalCategory = existingMatch;
             } else if (finalCategory.toLowerCase() !== "uncategorized") {
-                // Create new category marker if it doesn't exist and isn't "Uncategorized"
-                // This ensures the category appears in the sidebar/list
                 await createCategory(finalCategory);
             }
         }
@@ -288,8 +286,8 @@ const Recipe = () => {
                                         freeSolo
                                         options={categoryOptions}
                                         value={editData.Category}
-                                        onChange={(event: any, newValue: string | null) => {
-                                            setEditData({ ...editData, Category: newValue || '' });
+                                        onChange={(_event, newValue) => {
+                                            setEditData({ ...editData, Category: (newValue as string) || '' });
                                         }}
                                         onInputChange={(event, newInputValue) => {
                                             setEditData({ ...editData, Category: newInputValue });

@@ -6,7 +6,6 @@ import {
     Container, Typography, Grid, Card, CardContent,
     Button, Box, Avatar, Divider, CircularProgress, Paper
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import CategoryIcon from '@mui/icons-material/Category';
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
