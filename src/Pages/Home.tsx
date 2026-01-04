@@ -27,10 +27,6 @@ const Home = () => {
         }
     }, [accounts]);
 
-    const account = accounts[0];
-    const name = account?.name;
-    const idTokenClaims = account?.idTokenClaims as any;
-    const email = idTokenClaims?.email || idTokenClaims?.emails?.[0] || account?.username;
 
 
     const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
