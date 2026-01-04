@@ -31,48 +31,84 @@ export default function TemporaryDrawer() {
     };
     const isAuthenticated = useIsAuthenticated();
 
-    let menuItems = [];
-
-    if (!isAuthenticated) {
-        menuItems = [
-            { text: 'Home', icon: <HomeIcon />, path: '/' }
-        ];
-    } else {
-        menuItems = [
-            { text: 'Home', icon: <HomeIcon />, path: '/Home' },
-            { text: 'Create Recipe', icon: <RestaurantIcon />, path: '/create-recipe' },
-            { text: 'My Recipes', icon: <RestaurantIcon />, path: '/recipes' },
-            { text: 'Categories', icon: <CategoryIcon />, path: '/categories' },
-            { text: 'Grocery List', icon: <LocalGroceryStoreIcon />, path: '/groceries' },
-        ];
-    }
 
     const DrawerList = (
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
+            {/* SECTION 1: Portfolio & External Links */}
             <List>
-                {['Back to Portfolio', 'App Diagram', 'Contact Me'].map((text, index) => (
-                    <ListItem key={text} disablePadding>
-                        <ListItemButton>
-                            <ListItemIcon>
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href="https://gallaghercareer.github.io/portfolio-2025/#portfolio" target="">
+                        <ListItemIcon><HomeIcon /></ListItemIcon>
+                        <ListItemText primary="Back to Portfolio" />
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href="https://drive.google.com/file/d/1wke4lwAjcOIoF0oSzwb-AD7CfxHB4E6P/view?usp=sharing" target="_blank">
+                        <ListItemIcon><InboxIcon /></ListItemIcon>
+                        <ListItemText primary="App Diagram" />
+                    </ListItemButton>
+                </ListItem>
+
+                <ListItem disablePadding>
+                    <ListItemButton component="a" href="https://docs.google.com/document/d/11eorTSFoyTShaZlh9kUCtOeR4Je7WpJZji_dqIuKDw8/edit?usp=sharing" target="_blank">
+                        <ListItemIcon><MailIcon /></ListItemIcon>
+                        <ListItemText primary="Contact Me" />
+                    </ListItemButton>
+                </ListItem>
             </List>
+
             <Divider />
+
+            {/* SECTION 2: App Navigation (Conditional) */}
             <List>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding>
-                        <ListItemButton onClick={() => navigate(item.path)}>
-                            <ListItemIcon>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} />
+                {!isAuthenticated ? (
+                    // Public Links
+                    <ListItem disablePadding>
+                        <ListItemButton onClick={() => navigate('/')}>
+                            <ListItemIcon><HomeIcon /></ListItemIcon>
+                            <ListItemText primary="Home" />
                         </ListItemButton>
                     </ListItem>
-                ))}
+                ) : (
+                    // Authenticated Links
+                    <>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/Home')}>
+                                <ListItemIcon><HomeIcon /></ListItemIcon>
+                                <ListItemText primary="Home" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/create-recipe')}>
+                                <ListItemIcon><RestaurantIcon /></ListItemIcon>
+                                <ListItemText primary="Create Recipe" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/recipes')}>
+                                <ListItemIcon><RestaurantIcon /></ListItemIcon>
+                                <ListItemText primary="My Recipes" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/categories')}>
+                                <ListItemIcon><CategoryIcon /></ListItemIcon>
+                                <ListItemText primary="Categories" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => navigate('/groceries')}>
+                                <ListItemIcon><LocalGroceryStoreIcon /></ListItemIcon>
+                                <ListItemText primary="Grocery List" />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                )}
             </List>
         </Box>
     );
