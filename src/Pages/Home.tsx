@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRecipes } from '../Context/RecipeContext'; // 1. Import your new hook
 import {
     Container, Typography, Grid, Card, CardContent,
-    Button, Box, Avatar, Divider, CircularProgress, Paper
+    Button, Box, Divider, CircularProgress, Paper
 } from '@mui/material';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import CategoryIcon from '@mui/icons-material/Category';
@@ -32,7 +32,6 @@ const Home = () => {
     const idTokenClaims = account?.idTokenClaims as any;
     const email = idTokenClaims?.email || idTokenClaims?.emails?.[0] || account?.username;
 
-    const userName = (name && name !== "Unknown") ? name : (email || "Chef");
 
     const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
         <Card
