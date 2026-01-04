@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useRef } from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect } from 'react';
 import { useMsal } from "@azure/msal-react";
 
 const RecipeContext = createContext<any>(null);
@@ -12,13 +12,17 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     const [groceryList, setGroceryList] = useState<string[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
 
-    const addIngredientsToGroceryList = async (ingredients: string[]) => {
-        const newIngredients = ingredients.filter(i => !groceryList.includes(i));
-        if (newIngredients.length > 0) {
-            const newList = [...groceryList, ...newIngredients];
-            setGroceryList(newList);
-            await updateGroceryListApi(newList);
+    useEffect(() => {
+        if (accounts.length > 0 && !hasFetched.current) {
+            fetchRecipes();
         }
+    }, [accounts]);
+
+    const addIngredientsToGroceryList = async (ingredients: string[]) => {
+        if (!ingredients || ingredients.length === 0) return;
+        const newList = [...groceryList, ...ingredients];
+        setGroceryList(newList);
+        await updateGroceryListApi(newList);
     };
 
     const addToGroceryList = async (ingredient: string) => {

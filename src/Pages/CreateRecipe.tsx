@@ -68,7 +68,7 @@ const CreateRecipe = () => {
             Category: finalCategory, 
         };
 
-        addRecipe(newRecipe);
+        await addRecipe(newRecipe);
         navigate('/Home');
     };
 
