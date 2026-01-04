@@ -27,7 +27,12 @@ const Home = () => {
         }
     }, [accounts]);
 
-    const userName = accounts[0]?.name || accounts[0]?.username || "Chef";
+    const account = accounts[0];
+    const name = account?.name;
+    const idTokenClaims = account?.idTokenClaims as any;
+    const email = idTokenClaims?.email || idTokenClaims?.emails?.[0] || account?.username;
+    
+    const userName = (name && name !== "Unknown") ? name : (email || "Chef");
 
     const ActionCard = ({ title, icon, onClick }: { title: string, icon: React.ReactNode, onClick?: () => void }) => (
         <Card
