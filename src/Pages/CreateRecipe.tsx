@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import {
     Box, Container, Typography, TextField, Button, Grid, Paper,
-    List, ListItem, ListItemText, IconButton, Divider, Autocomplete
+    List, ListItem, ListItemText, IconButton, Divider, Autocomplete, CircularProgress
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -24,7 +24,8 @@ const CreateRecipe = () => {
     const [steps, setSteps] = useState('');
     const [editingIndex, setEditingIndex] = useState<number | null>(null);
     const [editingText, setEditingText] = useState('');
-    const { addToGroceryList, addRecipe, categories, createCategory } = useRecipes();
+    const [nameError, setNameError] = useState(false);
+    const { addToGroceryList, addRecipe, categories, createCategory, loading } = useRecipes();
     const navigate = useNavigate();
 
     const categoryOptions = useMemo<string[]>(() => {
@@ -41,9 +42,22 @@ const CreateRecipe = () => {
         return Array.from(new Set(names)).sort() as string[];
     }, [categories]);
 
+    //direct user to error if recipe name is missing on create
+    const nameInputRef = useRef<HTMLDivElement>(null);
 
     const handleSaveRecipe = async () => {
-        if (!recipeName.trim()) return;
+        if (!recipeName.trim()) {
+            setNameError(true);
+            // This scrolls the page up to the input smoothly
+            nameInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+            // This puts the typing cursor inside the box automatically
+            nameInputRef.current?.focus();
+            return;
+        }
+
+        // Reset error if name exists
+        setNameError(false);
 
         let finalCategory = category.trim();
 
@@ -130,9 +144,15 @@ const CreateRecipe = () => {
                                 <TextField
                                     fullWidth
                                     label="Recipe Name"
+                                    inputRef={nameInputRef}
                                     variant="outlined"
                                     value={recipeName}
-                                    onChange={(e) => setRecipeName(e.target.value)}
+                                    onChange={(e) => {
+                                        setRecipeName(e.target.value);
+                                        if (nameError) setNameError(false); // Clear red as they type
+                                    }}
+                                    error={nameError} // This turns the input red
+                                    helperText={nameError ? "Recipe Name is required" : ""} // Adds red text below
                                     sx={{ mb: 2 }}
                                     placeholder="e.g., Grandmother's Apple Pie"
                                 />
@@ -341,16 +361,29 @@ const CreateRecipe = () => {
                             )}
                         </Paper>
 
-                        <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+                        <Box sx={{ mt: 3, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+                            {loading && (
+                                <Typography variant="caption" color="text.warning" sx={{
+                                    color: '#d32f2f',      // This is the standard MUI "Error" Red
+                                    fontWeight: 'bold',    // 'fontWeight' makes it bold, 'fontStyle' is for italic
+                                    display: 'block',      // Ensures it sits on its own line
+                                    mt: 1                  // Adds a little margin on top
+                                }}>
+                                    This may take a moment if the server is waking up.
+                                </Typography>
+                            )}
                             <Button
                                 variant="contained"
                                 color="secondary"
                                 size="large"
                                 sx={{ px: 6, py: 1.5, borderRadius: 8 }}
                                 onClick={handleSaveRecipe}
+                                disabled={loading}
+                                startIcon={loading ? <CircularProgress size={20} color="inherit" /> : null}
                             >
-                                Create Recipe
+                                {loading ? 'Creating...' : 'Create Recipe'}
                             </Button>
+
                         </Box>
                     </Grid>
                 </Grid>
