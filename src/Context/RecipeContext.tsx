@@ -40,6 +40,15 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
         await updateGroceryListApi(newList);
     };
 
+    const removeGroceryItemByIndex = async (index: number) => {
+        const newList = [...groceryList];
+        if (index >= 0 && index < newList.length) {
+            newList.splice(index, 1);
+            setGroceryList(newList);
+            await updateGroceryListApi(newList);
+        }
+    };
+
     const updateGroceryListApi = async (newList: string[]) => {
         const payload = { Items: JSON.stringify(newList) };
         console.log("Updating grocery list with payload:", payload);
@@ -319,7 +328,7 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     return (
-        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, addIngredientsToGroceryList, removeFromGroceryList, addRecipe, deleteRecipe, deleteCategory, updateRecipe, createCategory }}>
+        <RecipeContext.Provider value={{ recipes, categories, fetchRecipes, loading, groceryList, addToGroceryList, addIngredientsToGroceryList, removeFromGroceryList, removeGroceryItemByIndex, addRecipe, deleteRecipe, deleteCategory, updateRecipe, createCategory }}>
             {children}
         </RecipeContext.Provider>
     );

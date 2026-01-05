@@ -6,7 +6,7 @@ import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import { useRecipes } from '../Context/RecipeContext';
 
 const Groceries = () => {
-    const { groceryList, removeFromGroceryList } = useRecipes();
+    const { groceryList, removeGroceryItemByIndex } = useRecipes();
 
     return (
         <Box sx={{ minHeight: 'calc(100vh - 64px)', py: 4, bgcolor: 'background.default', color: 'text.primary' }}>
@@ -31,7 +31,7 @@ const Groceries = () => {
                                             <IconButton 
                                                 edge="end" 
                                                 aria-label="delete" 
-                                                onClick={() => removeFromGroceryList(item)}
+                                                onClick={() => removeGroceryItemByIndex(index)}
                                                 color="error"
                                             >
                                                 <DeleteIcon />
