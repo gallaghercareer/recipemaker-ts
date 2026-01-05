@@ -134,26 +134,37 @@ export const RecipeProvider = ({ children }: { children: React.ReactNode }) => {
 
             if (response.ok) {
                 if (!force) hasFetched.current = true;
-                const allItems: any[] = await response.json();
+                const data = await response.json();
+                
+                const recipesData = data.Recipes || [];
+                const groceryListsData = data.GroceryLists || [];
 
                 // Handle Grocery List
-                const groceryItem = allItems.find(item => item.RowKey === 'GROCERY_LIST');
-                if (groceryItem && groceryItem.Ingredients) {
+                const groceryItem = groceryListsData.length > 0 ? groceryListsData[0] : null;
+                if (groceryItem) {
                     try {
-                        const parsed = JSON.parse(groceryItem.Ingredients);
-                        if (Array.isArray(parsed)) {
-                            setGroceryList(parsed);
+                        // The field in the new response is 'Items', but checking 'Ingredients' for backward compatibility doesn't hurt if the type is loose
+                        const rawItems = groceryItem.Items || groceryItem.Ingredients;
+                        if (rawItems) {
+                             let parsed = JSON.parse(rawItems);
+                             // Handle potential double-encoding
+                             if (typeof parsed === 'string') {
+                                 parsed = JSON.parse(parsed);
+                             }
+                             
+                             if (Array.isArray(parsed)) {
+                                 setGroceryList(parsed);
+                             }
                         }
                     } catch (e) {
                         console.error("Failed to parse grocery list ingredients:", e);
                     }
                 }
 
-                // Separate the "Mixed Bag" from Azure Table Storage
-                const onlyRecipes = allItems.filter(item => item.RowKey && item.RowKey.startsWith('recipe_'));
-                // Assume anything that isn't a recipe is a category (or at least metadata we want to classify as such for now)
-                // Exclude GROCERY_LIST
-                const onlyCategories = allItems.filter(item =>
+                // Separate the "Mixed Bag" from the Recipes array
+                const onlyRecipes = recipesData.filter((item: any) => item.RowKey && item.RowKey.startsWith('recipe_'));
+                // Assume anything that isn't a recipe is a category
+                const onlyCategories = recipesData.filter((item: any) =>
                     item.RowKey &&
                     !item.RowKey.startsWith('recipe_') &&
                     item.RowKey !== 'GROCERY_LIST'
