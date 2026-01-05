@@ -36,15 +36,15 @@ export default function TemporaryDrawer() {
         <Box sx={{ width: 250 }} role="presentation" onClick={toggleDrawer(false)}>
             {/* SECTION 1: Portfolio & External Links */}
             <List>
-                <ListItem disablePadding>
+                {/*<ListItem disablePadding>
                     <ListItemButton component="a" href="https://gallaghercareer.github.io/portfolio-2025/#portfolio" target="">
                         <ListItemIcon><HomeIcon /></ListItemIcon>
                         <ListItemText primary="Back to Portfolio" />
                     </ListItemButton>
-                </ListItem>
+                </ListItem>*/}
 
                 <ListItem disablePadding>
-                    <ListItemButton component="a" href="https://drive.google.com/file/d/1wke4lwAjcOIoF0oSzwb-AD7CfxHB4E6P/view?usp=sharing" target="_blank">
+                    <ListItemButton component="a" href="https://drive.google.com/file/d/1COKJrPqGm9OylL2yG1MG8qmecSUECK8F/view?usp=sharing" target="_blank">
                         <ListItemIcon><InboxIcon /></ListItemIcon>
                         <ListItemText primary="App Diagram" />
                     </ListItemButton>
